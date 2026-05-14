@@ -62,7 +62,14 @@ export const submitContent = async (
   }
   const body = (await res.json().catch(() => ({}))) as Record<string, unknown>;
   if (res.status === 202) {
-    return body as unknown as SubmitResult;
+    const jobId = typeof body.jobId === 'string' ? body.jobId : '';
+    const file = typeof body.file === 'string' ? body.file : '';
+    const detectedType = body.detectedType === 'markdown' ? 'markdown' : 'html';
+    if (!jobId || !file) {
+      console.error('[PdfClient][submitContent] malformed 202 body', body);
+      throw new ApiError('http', 'Malformed 202 response (missing jobId or file)', 202, undefined, body);
+    }
+    return { jobId, file, detectedType };
   }
   if (res.status === 400) {
     throw new ApiError(
