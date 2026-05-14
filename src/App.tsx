@@ -1,122 +1,73 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
+import { useEffect, useState } from 'react';
+import { Editor } from './components/Editor';
+import { Preview } from './components/Preview';
+import { Tabs } from './components/Tabs';
+import { Toolbar } from './components/Toolbar';
+import { StatusBar } from './components/StatusBar';
+import { useSubmit } from './hooks/useSubmit';
+import { usePoll } from './hooks/usePoll';
+import { detectType } from './utils/detectType';
 
-function App() {
-  const [count, setCount] = useState(0)
+const MIN = 10;
+const MAX = 50_000;
+
+const App = () => {
+  const [content, setContent] = useState('');
+  const [activeTab, setActiveTab] = useState<'editor' | 'preview'>('editor');
+  const [jobId, setJobId] = useState<string | null>(null);
+  const [cooldownLeft, setCooldownLeft] = useState<number | null>(null);
+
+  const detectedType = detectType(content);
+  const submit = useSubmit();
+  const poll = usePoll(jobId);
+
+  const lengthValid = content.length >= MIN && content.length <= MAX;
+  const canSubmit =
+    lengthValid &&
+    submit.state.phase !== 'submitting' &&
+    submit.state.phase !== 'rate_limited' &&
+    poll.phase !== 'polling';
+
+  // Drive the visible cooldown counter when rate-limited.
+  useEffect(() => {
+    if (submit.state.phase !== 'rate_limited') {
+      setCooldownLeft(null);
+      return;
+    }
+    const until = (submit.state as { until: number }).until;
+    const tick = () => {
+      const remainingMs = until - Date.now();
+      const left = Math.max(0, Math.ceil(remainingMs / 1000));
+      setCooldownLeft(left);
+    };
+    tick();
+    const id = window.setInterval(tick, 250);
+    return () => window.clearInterval(id);
+  }, [submit.state]);
+
+  const handleSubmit = () => {
+    if (!canSubmit) return;
+    submit.submit(content, (res) => setJobId(res.jobId));
+  };
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.tsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
+    <div className="app">
+      <Toolbar
+        charCount={content.length}
+        detectedType={detectedType}
+        canSubmit={canSubmit}
+        submitting={submit.state.phase === 'submitting'}
+        cooldownSeconds={cooldownLeft}
+        onSubmit={handleSubmit}
+      />
+      <Tabs active={activeTab} onChange={setActiveTab} />
+      {activeTab === 'editor'
+        ? <Editor value={content} onChange={setContent} onSubmitShortcut={handleSubmit} />
+        : <Preview content={content} detectedType={detectedType} />
+      }
+      <StatusBar pollState={poll} submitState={submit.state} />
+    </div>
+  );
+};
 
-      <div className="ticks"></div>
-
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
-
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
-}
-
-export default App
+export default App;
