@@ -1,0 +1,532 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Press. — html & markdown to pdf</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,300..700&family=Geist+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:        #fafafa;
+    --bg-2:      #f3f3f3;
+    --fg:        #0a0a0a;
+    --fg-2:      #404040;
+    --muted:     #737373;
+    --faint:     #a3a3a3;
+    --border:    #e5e5e5;
+    --border-2:  #ebebeb;
+    --amber:     #b45309;
+    --amber-2:   #92400e;
+    --green:     #15803d;
+
+    --sans:      'Bricolage Grotesque', ui-sans-serif, system-ui, sans-serif;
+    --mono:      'Geist Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+
+    --ease:      cubic-bezier(.22,.61,.36,1);
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; }
+  body {
+    font-family: var(--sans);
+    font-variation-settings: 'opsz' 14, 'wdth' 95, 'wght' 400;
+    font-size: 15px;
+    line-height: 1.55;
+    color: var(--fg);
+    background: var(--bg);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  ::selection { background: var(--fg); color: var(--bg); }
+  a { color: inherit; }
+
+  /* shell */
+  .shell {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 28px 32px 80px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+  }
+
+  /* --- header --- */
+  header.top {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: baseline;
+    gap: 16px;
+    padding-bottom: 22px;
+    border-bottom: 1px solid var(--border);
+  }
+  header.top .wordmark {
+    font-family: var(--sans);
+    font-variation-settings: 'opsz' 96, 'wdth' 80, 'wght' 600;
+    font-size: 38px;
+    letter-spacing: -.025em;
+    line-height: .9;
+    color: var(--fg);
+    cursor: default;
+    transition: font-variation-settings 360ms var(--ease), letter-spacing 360ms var(--ease);
+  }
+  header.top .wordmark:hover {
+    font-variation-settings: 'opsz' 96, 'wdth' 100, 'wght' 700;
+    letter-spacing: -.035em;
+  }
+  header.top .wordmark .dot { color: var(--amber); }
+  header.top .sub {
+    margin-top: 6px;
+    color: var(--muted);
+    font-size: 14px;
+    letter-spacing: -.005em;
+  }
+  header.top .meta {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: .04em;
+  }
+  header.top .meta .pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    border: 1px solid var(--border);
+    padding: 3px 8px;
+    border-radius: 999px;
+    color: var(--fg-2);
+    background: white;
+  }
+  header.top .meta .pill::before {
+    content: "";
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--green);
+  }
+
+  /* --- tabs --- */
+  .tabs {
+    display: flex;
+    align-items: center;
+    gap: 22px;
+  }
+  .tab {
+    cursor: pointer;
+    user-select: none;
+    background: none;
+    border: 0;
+    padding: 0 0 6px 0;
+    font: inherit;
+    font-variation-settings: 'opsz' 14, 'wdth' 95, 'wght' 400;
+    color: var(--muted);
+    position: relative;
+    letter-spacing: -.005em;
+    transition: color 200ms var(--ease);
+  }
+  .tab:hover { color: var(--fg-2); }
+  .tab.active {
+    color: var(--fg);
+    font-variation-settings: 'opsz' 14, 'wdth' 95, 'wght' 600;
+  }
+  .tab::after {
+    content: "";
+    position: absolute;
+    left: 0; right: 0; bottom: -1px;
+    height: 1px;
+    background: var(--fg);
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition: transform 260ms var(--ease);
+  }
+  .tab.active::after { transform: scaleX(1); }
+  .tabs .spacer { flex: 1; }
+  .tabs .badge {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: .04em;
+  }
+  .tabs .badge.warn { color: var(--amber); }
+
+  /* --- editor + preview surface --- */
+  .surface {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: white;
+    overflow: hidden;
+    box-shadow: 0 1px 0 rgba(0,0,0,.02), 0 12px 32px -22px rgba(0,0,0,.08);
+    position: relative;
+  }
+  .surface .editor {
+    width: 100%;
+    height: 360px;
+    border: 0;
+    outline: 0;
+    padding: 22px 24px;
+    font-family: var(--mono);
+    font-size: 13.5px;
+    line-height: 1.7;
+    color: var(--fg);
+    resize: none;
+    background: transparent;
+    letter-spacing: -.005em;
+  }
+  .surface .editor::placeholder {
+    color: var(--faint);
+    font-family: var(--sans);
+    font-variation-settings: 'opsz' 16, 'wdth' 100, 'wght' 400;
+    font-size: 17px;
+    font-style: normal;
+  }
+  /* bottom fade so long content softly fades out */
+  .surface::after {
+    content: "";
+    position: absolute;
+    pointer-events: none;
+    left: 0; right: 0; bottom: 0;
+    height: 36px;
+    background: linear-gradient(to bottom, transparent, white 90%);
+  }
+
+  .preview-wrap {
+    display: none;
+    padding: 28px 32px 36px;
+    min-height: 360px;
+  }
+  .preview-wrap.active { display: block; }
+  .preview-wrap h1, .preview-wrap h2, .preview-wrap h3 {
+    font-variation-settings: 'opsz' 64, 'wdth' 85, 'wght' 600;
+    letter-spacing: -.02em;
+    margin: 0 0 16px;
+  }
+  .preview-wrap h1 { font-size: 32px; line-height: 1.05; }
+  .preview-wrap p  { color: var(--fg); margin: 0 0 14px; }
+  .preview-wrap p.lead { color: var(--muted); font-size: 17px; line-height: 1.5; margin-bottom: 20px; }
+  .preview-wrap ul { color: var(--fg); padding-left: 1.1em; margin: 0 0 14px; }
+  .preview-wrap code, .preview-wrap pre {
+    font-family: var(--mono);
+    background: var(--bg-2);
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-size: 13px;
+  }
+
+  /* --- action row --- */
+  .actions {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    gap: 18px;
+  }
+  .status {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: var(--muted);
+    font-size: 14px;
+    letter-spacing: -.005em;
+    min-height: 36px;
+  }
+  .status .glyph {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--faint);
+    flex: none;
+    transition: background-color 200ms var(--ease), transform 200ms var(--ease), box-shadow 200ms var(--ease);
+  }
+  .status.idle .glyph     { background: var(--faint); }
+  .status.busy .glyph     { background: var(--amber); animation: glow 1.2s ease-in-out infinite alternate; }
+  .status.done .glyph     { background: var(--green); }
+  .status.err  .glyph     { background: var(--amber-2); }
+  @keyframes glow {
+    from { box-shadow: 0 0 0 0 rgba(180,83,9,.0); transform: scale(.9); }
+    to   { box-shadow: 0 0 0 4px rgba(180,83,9,.18); transform: scale(1); }
+  }
+  .status strong {
+    color: var(--fg);
+    font-variation-settings: 'opsz' 14, 'wdth' 95, 'wght' 600;
+    font-weight: normal; /* using variation axis */
+  }
+  .status .dim { color: var(--muted); }
+  .status .link {
+    color: var(--fg);
+    text-decoration: none;
+    border-bottom: 1px solid var(--fg);
+    padding-bottom: 1px;
+    transition: color 160ms var(--ease), border-color 160ms var(--ease);
+  }
+  .status .link:hover { color: var(--amber); border-bottom-color: var(--amber); }
+  .status code {
+    font-family: var(--mono);
+    font-size: 12px;
+    background: var(--bg-2);
+    color: var(--fg-2);
+    padding: 1px 6px;
+    border-radius: 4px;
+  }
+
+  .submit {
+    border: 0;
+    background: var(--fg);
+    color: var(--bg);
+    padding: 11px 18px 12px;
+    border-radius: 8px;
+    font: inherit;
+    font-variation-settings: 'opsz' 14, 'wdth' 95, 'wght' 500;
+    font-size: 14.5px;
+    letter-spacing: -.005em;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    transition: transform 80ms var(--ease), background 200ms var(--ease), opacity 200ms var(--ease);
+    box-shadow: 0 1px 0 rgba(0,0,0,.05);
+  }
+  .submit:hover { background: #1a1a1a; }
+  .submit:active { transform: translateY(1px); }
+  .submit:disabled {
+    background: var(--bg-2);
+    color: var(--muted);
+    box-shadow: inset 0 0 0 1px var(--border);
+    cursor: not-allowed;
+  }
+  .submit .kbd {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: rgba(250,250,250,.55);
+    background: rgba(255,255,255,.08);
+    border: 1px solid rgba(255,255,255,.12);
+    padding: 2px 6px;
+    border-radius: 4px;
+  }
+  .submit:disabled .kbd {
+    color: var(--faint);
+    background: white;
+    border-color: var(--border);
+  }
+
+  /* --- footer hint --- */
+  .hint {
+    display: flex;
+    justify-content: space-between;
+    color: var(--faint);
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: .04em;
+    margin-top: -8px;
+  }
+  .hint a { color: var(--muted); text-decoration: none; }
+  .hint a:hover { color: var(--fg); }
+
+  /* --- demo bar --- */
+  .demo-bar {
+    position: fixed;
+    bottom: 18px; right: 18px;
+    z-index: 50;
+    display: flex;
+    gap: 4px;
+    background: white;
+    border: 1px solid var(--border);
+    padding: 4px;
+    border-radius: 999px;
+    box-shadow: 0 8px 24px -12px rgba(0,0,0,.15);
+    font-family: var(--mono);
+    font-size: 10.5px;
+    letter-spacing: .04em;
+  }
+  .demo-bar button {
+    background: transparent;
+    border: 0;
+    color: var(--muted);
+    padding: 5px 11px;
+    border-radius: 999px;
+    cursor: pointer;
+    font: inherit;
+    transition: background 160ms var(--ease), color 160ms var(--ease);
+  }
+  .demo-bar button:hover { color: var(--fg); }
+  .demo-bar button.on { background: var(--fg); color: var(--bg); }
+
+  /* entry */
+  @keyframes lift {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  header.top, .tabs, .surface, .actions, .hint {
+    animation: lift 580ms var(--ease) both;
+  }
+  .tabs    { animation-delay: 80ms; }
+  .surface { animation-delay: 140ms; }
+  .actions { animation-delay: 220ms; }
+  .hint    { animation-delay: 280ms; }
+
+  @media (max-width: 640px) {
+    .shell { padding: 22px 18px 96px; }
+    header.top { grid-template-columns: 1fr; }
+    header.top .meta { justify-content: flex-start; }
+    .actions { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="shell">
+
+  <header class="top">
+    <div>
+      <div class="wordmark">Press<span class="dot">.</span></div>
+      <div class="sub">html &amp; markdown <span style="color:var(--faint)">→</span> pdf</div>
+    </div>
+    <div class="meta">
+      <span class="pill">localhost:3000</span>
+      <span>v1.0</span>
+    </div>
+  </header>
+
+  <div class="tabs">
+    <button class="tab active" data-tab="editor">Manuscript</button>
+    <button class="tab" data-tab="preview">Preview</button>
+    <div class="spacer"></div>
+    <span class="badge" id="badge">0 · markdown</span>
+  </div>
+
+  <div class="surface">
+    <textarea class="editor" id="editor" spellcheck="false"
+              placeholder="Write or paste html / markdown — 10 to 50,000 characters."></textarea>
+    <div class="preview-wrap" id="preview">
+      <h1>A quiet preview.</h1>
+      <p class="lead">Exactly what the press will set, rendered in a sandboxed frame.</p>
+      <p>Paragraphs run in the same family as the rest of the page — just larger optical size and a slightly looser line. Code stays in <code>Geist Mono</code>.</p>
+      <ul>
+        <li>No decoration unless it pays for its place.</li>
+        <li>Hairline border, soft shadow.</li>
+        <li>The page only ever <em>settles</em>.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="actions">
+    <div class="status idle" id="status">
+      <span class="glyph"></span>
+      <span><strong>Ready.</strong> <span class="dim">Type or paste, then press.</span></span>
+    </div>
+    <button class="submit" id="submit" type="button">
+      Press <span class="kbd">⌘↵</span>
+    </button>
+  </div>
+
+  <div class="hint">
+    <span>20 req/min on submit · 120 req/min on poll</span>
+    <a href="#" id="todayLink">—</a>
+  </div>
+
+</div>
+
+<div class="demo-bar" aria-label="State preview">
+  <button data-state="idle"      class="on">idle</button>
+  <button data-state="submitting">setting</button>
+  <button data-state="polling">running</button>
+  <button data-state="completed">done</button>
+  <button data-state="failed">failed</button>
+  <button data-state="rate">rate-limit</button>
+</div>
+
+<script>
+  // --- today in the footer ---
+  const fmt = new Intl.DateTimeFormat('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+  document.getElementById('todayLink').textContent = fmt.format(new Date()).toLowerCase().replace(/ /g, ' · ');
+
+  // --- tabs ---
+  const editor  = document.getElementById('editor');
+  const preview = document.getElementById('preview');
+  document.querySelectorAll('.tab').forEach((t) => {
+    t.addEventListener('click', () => {
+      document.querySelectorAll('.tab').forEach((x) => x.classList.remove('active'));
+      t.classList.add('active');
+      const which = t.dataset.tab;
+      editor.style.display = (which === 'editor') ? 'block' : 'none';
+      preview.classList.toggle('active', which === 'preview');
+    });
+  });
+
+  // --- detect + count ---
+  const badge = document.getElementById('badge');
+  const fmtN = (n) => n.toLocaleString('en-US').replace(/,/g, ',');
+  const mdIndicators = [
+    /^#{1,6}\s/m, /^\s*[*\-+]\s/m, /^\s*\d+\.\s/m, /\*\*[^*]+\*\*/,
+    /(^|\s)_[^_]+_(\s|$)/, /^\s*>\s/m, /^```/m, /^\s*\|.*\|\s*$/m, /\[[^\]]+\]\([^)]+\)/
+  ];
+  const detect = (s) => {
+    const t = s.trim();
+    if (t.startsWith('<')) return 'html';
+    if (mdIndicators.some((r) => r.test(t))) return 'markdown';
+    return 'html';
+  };
+  const update = () => {
+    const v = editor.value;
+    const c = v.length;
+    const t = v.length ? detect(v) : 'markdown';
+    badge.textContent = `${fmtN(c)} · ${t}`;
+    badge.classList.toggle('warn', c > 0 && (c < 10 || c > 50000));
+  };
+  editor.addEventListener('input', update);
+  update();
+
+  // --- state machine (UI only) ---
+  const statusEl = document.getElementById('status');
+  const submitEl = document.getElementById('submit');
+  const setStatus = (cls, html) => {
+    statusEl.className = 'status ' + cls;
+    statusEl.innerHTML = '<span class="glyph"></span><span>' + html + '</span>';
+  };
+  let timers = [];
+  const clear = () => { timers.forEach(clearTimeout); timers = []; };
+
+  const states = {
+    idle:       { cls: 'idle', html: '<strong>Ready.</strong> <span class="dim">Type or paste, then press.</span>',           btn: 'press' },
+    submitting: { cls: 'busy', html: '<strong>Setting.</strong> <span class="dim">Sending the manuscript.</span>',             btn: 'busy', disabled: true, btnText: 'Setting…' },
+    polling:    { cls: 'busy', html: '<strong>Running.</strong> <span class="dim">On the press · </span><code>job #87</code>', btn: 'busy', disabled: true, btnText: 'Running…' },
+    completed:  { cls: 'done', html: '<strong>Done.</strong> <span class="dim">Press ready · </span><a href="#" class="link">download pdf</a>', btn: 'again', btnText: 'Press again' },
+    failed:     { cls: 'err',  html: '<strong>Failed.</strong> <span class="dim">The plate refused — try again.</span>',       btn: 'press' },
+    rate:       { cls: 'err',  html: '<strong>Rate limited.</strong> <span class="dim">Wait </span><code>42s</code>',          btn: 'wait', disabled: true, btnText: 'Wait 42s' }
+  };
+
+  let currentState = 'idle';
+  const setState = (k) => {
+    currentState = k;
+    const s = states[k];
+    setStatus(s.cls, s.html);
+    submitEl.disabled = !!s.disabled;
+    if (s.btnText) {
+      submitEl.innerHTML = s.btnText;
+    } else {
+      submitEl.innerHTML = 'Press <span class="kbd">⌘↵</span>';
+    }
+    document.querySelectorAll('.demo-bar button').forEach((b) => b.classList.toggle('on', b.dataset.state === k));
+  };
+
+  // demo bar
+  document.querySelectorAll('.demo-bar button').forEach((b) => {
+    b.addEventListener('click', () => { clear(); setState(b.dataset.state); });
+  });
+
+  // submit cycle
+  submitEl.addEventListener('click', () => {
+    if (submitEl.disabled) return;
+    clear();
+    setState('submitting');
+    timers.push(setTimeout(() => setState('polling'), 700));
+    timers.push(setTimeout(() => setState('completed'), 2700));
+  });
+  document.addEventListener('keydown', (e) => {
+    if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') { e.preventDefault(); submitEl.click(); }
+  });
+
+  setState('idle');
+</script>
+</body>
+</html>
