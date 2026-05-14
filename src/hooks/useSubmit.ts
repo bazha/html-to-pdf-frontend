@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { ApiError, submitContent, type SubmitResult } from '../api/pdfClient';
 
 export type SubmitState =
@@ -23,35 +23,42 @@ export const useSubmit = (): UseSubmit => {
     [],
   );
 
-  const submit = (content: string, onSuccess: (r: SubmitResult) => void) => {
-    setState({ phase: 'submitting' });
-    submitContent(content)
-      .then((res) => {
-        setState({ phase: 'idle' });
-        onSuccess(res);
-      })
-      .catch((err: unknown) => {
-        if (err instanceof ApiError && err.code === 'rate_limit') {
-          const retryAfter = err.retryAfter ?? 60;
-          const until = Date.now() + retryAfter * 1000;
-          setState({ phase: 'rate_limited', retryAfter, until });
-          timeoutRef.current = window.setTimeout(() => {
-            setState({ phase: 'idle' });
-            timeoutRef.current = null;
-          }, retryAfter * 1000);
-          return;
-        }
-        if (err instanceof ApiError) {
-          setState({
-            phase: 'error',
-            code: err.code === 'validation' ? 'validation' : err.code === 'network' ? 'network' : 'http',
-            message: err.message,
-          });
-          return;
-        }
-        setState({ phase: 'error', code: 'network', message: 'Unknown error' });
-      });
-  };
+  const submit = useCallback(
+    (content: string, onSuccess: (r: SubmitResult) => void) => {
+      if (timeoutRef.current !== null) {
+        window.clearTimeout(timeoutRef.current);
+        timeoutRef.current = null;
+      }
+      setState({ phase: 'submitting' });
+      submitContent(content)
+        .then((res) => {
+          setState({ phase: 'idle' });
+          onSuccess(res);
+        })
+        .catch((err: unknown) => {
+          if (err instanceof ApiError && err.code === 'rate_limit') {
+            const retryAfter = err.retryAfter ?? 60;
+            const until = Date.now() + retryAfter * 1000;
+            setState({ phase: 'rate_limited', retryAfter, until });
+            timeoutRef.current = window.setTimeout(() => {
+              setState({ phase: 'idle' });
+              timeoutRef.current = null;
+            }, retryAfter * 1000);
+            return;
+          }
+          if (err instanceof ApiError) {
+            setState({
+              phase: 'error',
+              code: err.code === 'validation' ? 'validation' : err.code === 'network' ? 'network' : 'http',
+              message: err.message,
+            });
+            return;
+          }
+          setState({ phase: 'error', code: 'network', message: 'Unknown error' });
+        });
+    },
+    [],
+  );
 
   return { state, submit };
 };
