@@ -12,20 +12,7 @@ export const Editor = ({ value, onChange, onSubmitShortcut }: Props) => {
   return (
     <textarea
       ref={ref}
-      className="pane"
-      style={{
-        width: '100%',
-        height: '100%',
-        background: 'var(--bg)',
-        color: 'var(--fg)',
-        border: 0,
-        outline: 'none',
-        padding: '12px',
-        fontFamily: 'var(--mono)',
-        fontSize: 13,
-        lineHeight: 1.55,
-        resize: 'none',
-      }}
+      className="editor"
       value={value}
       onChange={(e) => onChange(e.target.value)}
       onKeyDown={(e) => {
@@ -34,7 +21,7 @@ export const Editor = ({ value, onChange, onSubmitShortcut }: Props) => {
           onSubmitShortcut();
         }
       }}
-      placeholder="Paste HTML or Markdown here (10–50000 chars)…"
+      placeholder="Write or paste html / markdown — 10 to 50,000 characters."
       spellCheck={false}
     />
   );

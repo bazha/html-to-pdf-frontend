@@ -3,17 +3,20 @@ interface Props {
   onChange: (tab: 'editor' | 'preview') => void;
 }
 
+const LABELS = { editor: 'Manuscript', preview: 'Preview' } as const;
+
 export const Tabs = ({ active, onChange }: Props) => (
   <div className="tabs" role="tablist">
     {(['editor', 'preview'] as const).map((tab) => (
       <button
         key={tab}
+        type="button"
         role="tab"
         aria-selected={active === tab}
-        className={active === tab ? 'active' : ''}
+        className={`tab${active === tab ? ' active' : ''}`}
         onClick={() => onChange(tab)}
       >
-        {tab === 'editor' ? 'Editor' : 'Preview'}
+        {LABELS[tab]}
       </button>
     ))}
   </div>
