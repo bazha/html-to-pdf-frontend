@@ -3,6 +3,7 @@ import type { UsePdfOptions } from '../../hooks/usePdfOptions';
 import { DEFAULTS } from '../../types/pdfOptions';
 import { summarize } from '../../utils/summarize';
 import { PageFormatControl } from './PageFormatControl';
+import { MarginsControl } from './MarginsControl';
 
 interface Props {
   pdf: UsePdfOptions;
@@ -60,7 +61,14 @@ export const OptionsBar = ({ pdf }: Props) => {
             onOrientationChange={(l) => pdf.set('landscape', l)}
           />
 
-          {/* future controls render here: Margins, Header, Footer, CSS */}
+          <MarginsControl
+            preset={pdf.options.marginPreset}
+            margins={pdf.options.margins}
+            onPresetChange={(p) => pdf.set('marginPreset', p)}
+            onMarginChange={pdf.setMargin}
+          />
+
+          {/* future controls render here: Header, Footer, CSS */}
 
           <div className="options-bar__footer">
             {confirmingReset ? (
