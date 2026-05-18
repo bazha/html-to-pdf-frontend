@@ -36,21 +36,25 @@ const App = () => {
     submit.state.phase !== 'rate_limited' &&
     poll.phase !== 'polling';
 
+  // Reset cooldown on phase transitions during render (React-blessed pattern)
+  // so the effect below is purely a ticking side-effect.
+  const submitState = submit.state;
+  const [prevSubmitPhase, setPrevSubmitPhase] = useState(submitState.phase);
+  if (submitState.phase !== prevSubmitPhase) {
+    setPrevSubmitPhase(submitState.phase);
+    // Seed with retryAfter (pure); the effect's interval refines it within 250ms.
+    setCooldownLeft(submitState.phase === 'rate_limited' ? submitState.retryAfter : null);
+  }
+
   useEffect(() => {
-    if (submit.state.phase !== 'rate_limited') {
-      setCooldownLeft(null);
-      return;
-    }
-    const until = (submit.state as { until: number }).until;
-    const tick = () => {
+    if (submitState.phase !== 'rate_limited') return;
+    const until = submitState.until;
+    const id = window.setInterval(() => {
       const remainingMs = until - Date.now();
-      const left = Math.max(0, Math.ceil(remainingMs / 1000));
-      setCooldownLeft(left);
-    };
-    tick();
-    const id = window.setInterval(tick, 250);
+      setCooldownLeft(Math.max(0, Math.ceil(remainingMs / 1000)));
+    }, 250);
     return () => window.clearInterval(id);
-  }, [submit.state]);
+  }, [submitState]);
 
   // auto-clear file error after a few seconds
   useEffect(() => {
@@ -110,7 +114,7 @@ const App = () => {
       </div>
 
       <div
-        className={`surface${isDragOver ? ' dragover' : ''}`}
+        className={`surface${isDragOver ? ' dragover' : ''}${poll.phase === 'polling' || submit.state.phase === 'submitting' ? ' surface--running' : ''}`}
         onDragEnter={(e) => {
           e.preventDefault();
           dragDepth.current += 1;

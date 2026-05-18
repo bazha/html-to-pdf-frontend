@@ -59,7 +59,7 @@ const renderStatus = (
       cls: 'busy',
       node: (
         <span>
-          <strong>Setting.</strong> <span className="dim">Sending the manuscript.</span>
+          <strong>Submitting.</strong> <span className="dim">Sending content.</span>
         </span>
       ),
     };
@@ -69,8 +69,8 @@ const renderStatus = (
       cls: 'busy',
       node: (
         <span>
-          <strong>Running.</strong>{' '}
-          <span className="dim">On the press.</span>
+          <strong>Rendering.</strong>{' '}
+          <span className="dim">Generating PDF on the server.</span>
         </span>
       ),
     };
@@ -80,7 +80,7 @@ const renderStatus = (
       cls: 'done',
       node: (
         <span>
-          <strong>Done.</strong> <span className="dim">Press ready · </span>
+          <strong>Ready.</strong> <span className="dim">PDF generated · </span>
           <a className="link" href={pollState.url} target="_blank" rel="noreferrer">
             download pdf
           </a>
@@ -113,8 +113,8 @@ const renderStatus = (
     cls: 'idle',
     node: (
       <span>
-        <strong>Ready.</strong>{' '}
-        <span className="dim">Type or paste, then press.</span>
+        <strong>Idle.</strong>{' '}
+        <span className="dim">Type or paste, then submit.</span>
       </span>
     ),
   };
@@ -129,8 +129,8 @@ const submitLabel = (
     const left = cooldownSeconds ?? submitState.retryAfter;
     return `Wait ${left}s`;
   }
-  if (submitState.phase === 'submitting') return 'Setting…';
-  if (pollState.phase === 'polling') return 'Running…';
+  if (submitState.phase === 'submitting') return 'Submitting…';
+  if (pollState.phase === 'polling') return 'Rendering…';
   if (pollState.phase === 'completed') {
     return (
       <>

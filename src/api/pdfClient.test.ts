@@ -37,10 +37,7 @@ const handlers = [
 ];
 
 const server = setupServer(...handlers);
-beforeAll(() => {
-  server.listen();
-  (import.meta as any).env = { VITE_API_BASE_URL: API };
-});
+beforeAll(() => server.listen());
 afterEach(() => server.resetHandlers());
 afterAll(() => server.close());
 

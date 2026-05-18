@@ -3,7 +3,7 @@ interface Props {
   onChange: (tab: 'editor' | 'preview') => void;
 }
 
-const LABELS = { editor: 'Manuscript', preview: 'Preview' } as const;
+const LABELS = { editor: 'Editor', preview: 'Preview' } as const;
 
 export const Tabs = ({ active, onChange }: Props) => (
   <div className="tabs" role="tablist">

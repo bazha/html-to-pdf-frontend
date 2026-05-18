@@ -28,7 +28,7 @@ export const LoadFileButton = ({ onPick }: Props) => {
         onClick={() => ref.current?.click()}
         aria-label="Load file from computer"
       >
-        Load file<span aria-hidden="true"> …</span>
+        Open file
       </button>
     </>
   );

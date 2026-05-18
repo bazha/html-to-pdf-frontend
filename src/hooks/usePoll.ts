@@ -22,14 +22,17 @@ export const usePoll = (
 ): PollState => {
   const intervalMs = opts.intervalMs ?? DEFAULT_INTERVAL_MS;
   const timeoutMs = opts.timeoutMs ?? DEFAULT_TIMEOUT_MS;
-  const [state, setState] = useState<PollState>({ phase: 'idle' });
+  const initial = (id: string | null): PollState =>
+    id ? { phase: 'polling', state: 'waiting' } : { phase: 'idle' };
+  const [state, setState] = useState<PollState>(() => initial(jobId));
+  const [prevJobId, setPrevJobId] = useState(jobId);
+  if (jobId !== prevJobId) {
+    setPrevJobId(jobId);
+    setState(initial(jobId));
+  }
 
   useEffect(() => {
-    if (!jobId) {
-      setState({ phase: 'idle' });
-      return;
-    }
-    setState({ phase: 'polling', state: 'waiting' });
+    if (!jobId) return;
     let cancelled = false;
     let timer: ReturnType<typeof setTimeout> | null = null;
     const deadline = Date.now() + timeoutMs;
