@@ -26,6 +26,7 @@ export const OptionsBar = ({ pdf }: Props) => {
   const toggle = () => {
     const next = !expanded;
     setExpanded(next);
+    if (!next) setConfirmingReset(false);
     try {
       localStorage.setItem(EXPANDED_KEY, next ? '1' : '0');
     } catch {
@@ -50,7 +51,7 @@ export const OptionsBar = ({ pdf }: Props) => {
         <span className="options-bar__caret" aria-hidden="true">▾</span>
       </button>
 
-      <div className="options-bar__body" aria-hidden={!expanded}>
+      <div className="options-bar__body" aria-hidden={!expanded} inert={!expanded}>
         <div className="options-bar__inner">
           <PageFormatControl
             format={pdf.options.format}
