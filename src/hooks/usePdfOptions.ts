@@ -26,8 +26,12 @@ const isValid = (o: unknown): o is PdfOptions => {
     ['A4', 'Letter', 'Legal', 'A3', 'A5'].includes(x.format) &&
     typeof x.landscape === 'boolean' &&
     typeof x.marginPreset === 'string' &&
+    ['normal', 'narrow', 'wide', 'none', 'custom'].includes(x.marginPreset) &&
     !!x.margins &&
     typeof (x.margins as Margins).top === 'number' &&
+    typeof (x.margins as Margins).right === 'number' &&
+    typeof (x.margins as Margins).bottom === 'number' &&
+    typeof (x.margins as Margins).left === 'number' &&
     !!x.header &&
     typeof x.header.enabled === 'boolean' &&
     typeof x.header.template === 'string' &&
@@ -57,9 +61,14 @@ const load = (): PdfOptions => {
 export const usePdfOptions = (): UsePdfOptions => {
   const [options, setOptions] = useState<PdfOptions>(load);
   const timer = useRef<number | null>(null);
+  const skipNextPersist = useRef(false);
 
   // Debounced persist.
   useEffect(() => {
+    if (skipNextPersist.current) {
+      skipNextPersist.current = false;
+      return;
+    }
     if (timer.current !== null) window.clearTimeout(timer.current);
     timer.current = window.setTimeout(() => {
       try {
@@ -99,6 +108,9 @@ export const usePdfOptions = (): UsePdfOptions => {
   }, []);
 
   const reset = useCallback<UsePdfOptions['reset']>(() => {
+    if (timer.current !== null) window.clearTimeout(timer.current);
+    timer.current = null;
+    skipNextPersist.current = true;
     setOptions(DEFAULTS);
     try {
       localStorage.removeItem(STORAGE_KEY);

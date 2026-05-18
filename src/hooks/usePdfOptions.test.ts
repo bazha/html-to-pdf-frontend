@@ -78,6 +78,14 @@ describe('usePdfOptions', () => {
     expect(localStorage.getItem(KEY)).toBeNull();
   });
 
+  it('reset() cancels the pending debounce so storage stays cleared', () => {
+    const { result } = renderHook(() => usePdfOptions());
+    act(() => result.current.set('format', 'Letter'));
+    act(() => result.current.reset());
+    act(() => vi.advanceTimersByTime(500));
+    expect(localStorage.getItem(KEY)).toBeNull();
+  });
+
   it('persists changes to localStorage after debounce', () => {
     const { result } = renderHook(() => usePdfOptions());
     act(() => result.current.set('format', 'Letter'));
