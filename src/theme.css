@@ -398,40 +398,33 @@ button { font: inherit; }
 }
 
 /* ============================================================ */
-/*  theme switcher — segmented pill                              */
+/*  segmented — generic pill with a sliding indicator            */
 /* ============================================================ */
-.theme-switcher {
+.segmented {
   position: relative;
   display: inline-flex;
   align-items: center;
   padding: 3px;
-  margin-top: 2px;
   background: var(--surface);
   border: 1px solid var(--line);
   border-radius: 999px;
-  /* tiny inner shadow gives the pill a recessed track feel; the slider
-     thumb floats above it */
   box-shadow: inset 0 1px 2px rgba(0,0,0,.06);
 }
-.theme-switcher__indicator {
+.segmented__indicator {
   position: absolute;
   top: 3px;
   left: 3px;
-  width: 26px;
   height: 22px;
   border-radius: 999px;
   background: var(--accent);
   box-shadow: 0 4px 14px -4px var(--accent-glow), 0 0 0 1px rgba(155,204,75,.45) inset;
-  /* the headline micro-interaction: a custom spring-y ease so the thumb
-     glides under the chosen icon. */
-  transition: transform 340ms cubic-bezier(.4, 1.2, .35, 1);
+  transition: transform 340ms cubic-bezier(.4, 1.2, .35, 1), width 240ms var(--ease);
   z-index: 0;
   pointer-events: none;
 }
-.theme-switcher__opt {
+.segmented__opt {
   position: relative;
   z-index: 1;
-  width: 26px;
   height: 22px;
   display: inline-flex;
   align-items: center;
@@ -441,19 +434,30 @@ button { font: inherit; }
   color: var(--muted);
   cursor: pointer;
   border-radius: 999px;
-  padding: 0;
-  transition: color 220ms var(--ease), transform 200ms var(--ease);
+  padding: 0 10px;
+  font-family: var(--sans);
+  font-size: 12px;
+  font-variation-settings: 'wdth' 100, 'wght' 500;
+  letter-spacing: -.005em;
+  transition: color 220ms var(--ease);
 }
-.theme-switcher__opt:hover:not(.is-active) { color: var(--fg-2); }
-.theme-switcher__opt:hover:not(.is-active) svg { transform: scale(1.1); }
-.theme-switcher__opt svg {
-  transition: transform 220ms var(--ease);
-}
-.theme-switcher__opt.is-active { color: var(--accent-ink); }
-.theme-switcher__opt:focus-visible {
+.segmented__opt:hover:not(.is-active) { color: var(--fg-2); }
+.segmented__opt.is-active { color: var(--accent-ink); }
+.segmented__opt:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
 }
+.segmented__opt svg { transition: transform 220ms var(--ease); }
+.segmented__opt:hover:not(.is-active) svg { transform: scale(1.1); }
+
+/* Icon-only variant (theme switcher uses this). */
+.segmented--icons .segmented__opt { width: 26px; padding: 0; }
+.segmented--icons .segmented__indicator { width: 26px; }
+
+/* Two-slot text variant (orientation will use this in Task 2.2). */
+.segmented--two { width: 160px; }
+.segmented--two .segmented__opt { flex: 1; min-width: 0; padding: 0; }
+.segmented--two .segmented__indicator { width: calc(50% - 3px); }
 
 /* ============================================================ */
 /*  tab-row                                                      */

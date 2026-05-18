@@ -58,9 +58,9 @@ export const ThemeSwitcher = () => {
   const activeIdx = OPTIONS.findIndex((o) => o.value === theme);
 
   return (
-    <div className="theme-switcher" role="radiogroup" aria-label="Theme">
+    <div className="segmented segmented--icons" role="radiogroup" aria-label="Theme">
       <span
-        className="theme-switcher__indicator"
+        className="segmented__indicator"
         style={{ transform: `translateX(${activeIdx * 26}px)` }}
         aria-hidden="true"
       />
@@ -72,7 +72,7 @@ export const ThemeSwitcher = () => {
           aria-checked={theme === value}
           aria-label={label}
           title={label}
-          className={`theme-switcher__opt${theme === value ? ' is-active' : ''}`}
+          className={`segmented__opt${theme === value ? ' is-active' : ''}`}
           onClick={() => setTheme(value)}
         >
           <Icon />
