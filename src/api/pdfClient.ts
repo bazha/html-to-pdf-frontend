@@ -28,6 +28,8 @@ export interface SubmitResult {
   detectedType: 'html' | 'markdown';
 }
 
+import type { RequestPdfOptions } from './optionsMapper';
+
 export type PollResult =
   | { kind: 'active'; state: string }
   | { kind: 'completed'; url: string }
@@ -48,13 +50,14 @@ const getBaseUrl = (override?: string): string =>
 export const submitContent = async (
   content: string,
   baseUrl?: string,
+  options?: RequestPdfOptions,
 ): Promise<SubmitResult> => {
   let res: Response;
   try {
     res = await fetch(`${getBaseUrl(baseUrl)}/pdf`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ content }),
+      body: JSON.stringify(options ? { content, options } : { content }),
     });
   } catch (err) {
     console.error('[PdfClient][submitContent] network', err);

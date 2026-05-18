@@ -8,6 +8,7 @@ import { Footer } from './components/Footer';
 import { LoadFileButton } from './components/LoadFileButton';
 import { useSubmit } from './hooks/useSubmit';
 import { usePoll } from './hooks/usePoll';
+import { usePdfOptions } from './hooks/usePdfOptions';
 import { detectType } from './utils/detectType';
 import { loadFileAsText } from './utils/loadFile';
 
@@ -28,6 +29,7 @@ const App = () => {
   const detectedType = detectType(content);
   const submit = useSubmit();
   const poll = usePoll(jobId);
+  const pdfOptions = usePdfOptions();
 
   const lengthValid = content.length >= MIN && content.length <= MAX;
   const canSubmit =
@@ -77,7 +79,7 @@ const App = () => {
 
   const handleSubmit = () => {
     if (!canSubmit) return;
-    submit.submit(content, (res) => setJobId(res.jobId));
+    submit.submit(content, pdfOptions.options, (res) => setJobId(res.jobId));
   };
 
   const handlePickedFile = async (file: File) => {

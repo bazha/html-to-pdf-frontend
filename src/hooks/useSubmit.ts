@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { ApiError, submitContent, type SubmitResult } from '../api/pdfClient';
+import { type PdfOptions } from '../types/pdfOptions';
+import { toRequestOptions } from '../api/optionsMapper';
 
 export type SubmitState =
   | { phase: 'idle' }
@@ -9,7 +11,11 @@ export type SubmitState =
 
 export interface UseSubmit {
   state: SubmitState;
-  submit: (content: string, onSuccess: (r: SubmitResult) => void) => void;
+  submit: (
+    content: string,
+    options: PdfOptions,
+    onSuccess: (r: SubmitResult) => void,
+  ) => void;
 }
 
 export const useSubmit = (): UseSubmit => {
@@ -24,13 +30,13 @@ export const useSubmit = (): UseSubmit => {
   );
 
   const submit = useCallback(
-    (content: string, onSuccess: (r: SubmitResult) => void) => {
+    (content: string, options: PdfOptions, onSuccess: (r: SubmitResult) => void) => {
       if (timeoutRef.current !== null) {
         window.clearTimeout(timeoutRef.current);
         timeoutRef.current = null;
       }
       setState({ phase: 'submitting' });
-      submitContent(content)
+      submitContent(content, undefined, toRequestOptions(options))
         .then((res) => {
           setState({ phase: 'idle' });
           onSuccess(res);

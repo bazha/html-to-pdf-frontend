@@ -2,6 +2,7 @@ import { describe, it, expect, vi, afterEach } from 'vitest';
 import { renderHook, act, waitFor } from '@testing-library/react';
 import { useSubmit } from './useSubmit';
 import { ApiError } from '../api/pdfClient';
+import { DEFAULTS } from '../types/pdfOptions';
 
 vi.mock('../api/pdfClient', async () => {
   const actual = await vi.importActual<typeof import('../api/pdfClient')>(
@@ -36,7 +37,7 @@ describe('useSubmit', () => {
     const { result } = renderHook(() => useSubmit());
     const onResult = vi.fn();
     act(() => {
-      result.current.submit('hello world ten plus chars', onResult);
+      result.current.submit('hello world ten plus chars', DEFAULTS, onResult);
     });
     expect(result.current.state.phase).toBe('submitting');
     await waitFor(() => expect(result.current.state.phase).toBe('idle'));
@@ -54,7 +55,7 @@ describe('useSubmit', () => {
     );
     const { result } = renderHook(() => useSubmit());
     act(() => {
-      result.current.submit('content long enough', vi.fn());
+      result.current.submit('content long enough', DEFAULTS, vi.fn());
     });
     await waitFor(() =>
       expect(result.current.state).toMatchObject({ phase: 'rate_limited', retryAfter: 5 }),
@@ -71,7 +72,7 @@ describe('useSubmit', () => {
     );
     const { result } = renderHook(() => useSubmit());
     act(() => {
-      result.current.submit('short', vi.fn());
+      result.current.submit('short', DEFAULTS, vi.fn());
     });
     await waitFor(() =>
       expect(result.current.state).toMatchObject({

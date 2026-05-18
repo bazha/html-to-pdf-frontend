@@ -61,6 +61,47 @@ describe('submitContent', () => {
       retryAfter: 42,
     });
   });
+
+  it('sends options in the body when provided', async () => {
+    let captured: { content?: string; options?: unknown } = {};
+    server.use(
+      http.post(`${API}/pdf`, async ({ request }) => {
+        captured = (await request.json()) as typeof captured;
+        return HttpResponse.json(
+          { message: 'ok', jobId: 'job-1', file: 'f.pdf', detectedType: 'html' },
+          { status: 202 },
+        );
+      }),
+    );
+    const opts = {
+      format: 'Letter',
+      landscape: true,
+      margin: { top: '10mm', right: '10mm', bottom: '10mm', left: '10mm' },
+      displayHeaderFooter: false,
+      headerTemplate: '',
+      footerTemplate: '',
+      printBackground: true,
+    };
+    await submitContent('hello world long enough', API, opts);
+    expect(captured.content).toBe('hello world long enough');
+    expect(captured.options).toEqual(opts);
+  });
+
+  it('omits options field when not provided', async () => {
+    let captured: { content?: string; options?: unknown } = {};
+    server.use(
+      http.post(`${API}/pdf`, async ({ request }) => {
+        captured = (await request.json()) as typeof captured;
+        return HttpResponse.json(
+          { message: 'ok', jobId: 'job-1', file: 'f.pdf', detectedType: 'html' },
+          { status: 202 },
+        );
+      }),
+    );
+    await submitContent('hello world long enough', API);
+    expect(captured.content).toBe('hello world long enough');
+    expect('options' in captured).toBe(false);
+  });
 });
 
 describe('pollJob', () => {
