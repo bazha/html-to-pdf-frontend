@@ -6,6 +6,7 @@ import { Header } from './components/Header';
 import { ActionRow } from './components/ActionRow';
 import { Footer } from './components/Footer';
 import { LoadFileButton } from './components/LoadFileButton';
+import { OptionsBar } from './components/OptionsBar';
 import { useSubmit } from './hooks/useSubmit';
 import { usePoll } from './hooks/usePoll';
 import { usePdfOptions } from './hooks/usePdfOptions';
@@ -114,6 +115,8 @@ const App = () => {
         <LoadFileButton onPick={handlePickedFile} />
         <span className={`badge${badgeWarn ? ' warn' : ''}`}>{badgeText}</span>
       </div>
+
+      <OptionsBar pdf={pdfOptions} />
 
       <div
         className={`surface${isDragOver ? ' dragover' : ''}${poll.phase === 'polling' || submit.state.phase === 'submitting' ? ' surface--running' : ''}`}
