@@ -1,4 +1,5 @@
 import type { RefObject } from 'react';
+import { HEADER_TEMPLATE_MAX_LENGTH } from '../../types/pdfOptions';
 
 interface Props {
   inputRef: RefObject<HTMLInputElement | null>;
@@ -11,12 +12,13 @@ export const PlaceholderChips = ({ inputRef, onInsert }: Props) => {
   const insert = (token: string) => {
     const el = inputRef.current;
     if (!el) {
-      onInsert(token);
+      onInsert(token.slice(0, HEADER_TEMPLATE_MAX_LENGTH));
       return;
     }
     const start = el.selectionStart ?? el.value.length;
     const end = el.selectionEnd ?? el.value.length;
-    const next = el.value.slice(0, start) + token + el.value.slice(end);
+    const next = (el.value.slice(0, start) + token + el.value.slice(end))
+      .slice(0, HEADER_TEMPLATE_MAX_LENGTH);
     onInsert(next);
     requestAnimationFrame(() => {
       el.focus();

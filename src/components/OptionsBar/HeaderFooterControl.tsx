@@ -26,6 +26,7 @@ export const HeaderFooterControl = ({
           type="button"
           role="switch"
           aria-checked={enabled}
+          aria-label={`${label} enabled`}
           className={`opt-toggle${enabled ? ' is-on' : ''}`}
           onClick={() => onEnabledChange(!enabled)}
         >
