@@ -4,6 +4,7 @@ import { DEFAULTS } from '../../types/pdfOptions';
 import { summarize } from '../../utils/summarize';
 import { PageFormatControl } from './PageFormatControl';
 import { MarginsControl } from './MarginsControl';
+import { HeaderFooterControl } from './HeaderFooterControl';
 
 interface Props {
   pdf: UsePdfOptions;
@@ -68,7 +69,22 @@ export const OptionsBar = ({ pdf }: Props) => {
             onMarginChange={pdf.setMargin}
           />
 
-          {/* future controls render here: Header, Footer, CSS */}
+          <HeaderFooterControl
+            label="Header"
+            enabled={pdf.options.header.enabled}
+            template={pdf.options.header.template}
+            onEnabledChange={(e) => pdf.set('header', { ...pdf.options.header, enabled: e })}
+            onTemplateChange={(t) => pdf.set('header', { ...pdf.options.header, template: t })}
+          />
+          <HeaderFooterControl
+            label="Footer"
+            enabled={pdf.options.footer.enabled}
+            template={pdf.options.footer.template}
+            onEnabledChange={(e) => pdf.set('footer', { ...pdf.options.footer, enabled: e })}
+            onTemplateChange={(t) => pdf.set('footer', { ...pdf.options.footer, template: t })}
+          />
+
+          {/* future controls render here: CSS */}
 
           <div className="options-bar__footer">
             {confirmingReset ? (
