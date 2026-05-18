@@ -5,6 +5,7 @@ import { summarize } from '../../utils/summarize';
 import { PageFormatControl } from './PageFormatControl';
 import { MarginsControl } from './MarginsControl';
 import { HeaderFooterControl } from './HeaderFooterControl';
+import { CustomCssControl } from './CustomCssControl';
 
 interface Props {
   pdf: UsePdfOptions;
@@ -84,7 +85,10 @@ export const OptionsBar = ({ pdf }: Props) => {
             onTemplateChange={(t) => pdf.set('footer', { ...pdf.options.footer, template: t })}
           />
 
-          {/* future controls render here: CSS */}
+          <CustomCssControl
+            value={pdf.options.css}
+            onChange={(v) => pdf.set('css', v)}
+          />
 
           <div className="options-bar__footer">
             {confirmingReset ? (

@@ -12,6 +12,7 @@ import { usePoll } from './hooks/usePoll';
 import { usePdfOptions } from './hooks/usePdfOptions';
 import { detectType } from './utils/detectType';
 import { loadFileAsText } from './utils/loadFile';
+import { CSS_MAX_LENGTH } from './types/pdfOptions';
 
 const MIN = 10;
 const MAX = 50_000;
@@ -33,8 +34,10 @@ const App = () => {
   const pdfOptions = usePdfOptions();
 
   const lengthValid = content.length >= MIN && content.length <= MAX;
+  const cssWithinCap = pdfOptions.options.css.length <= CSS_MAX_LENGTH;
   const canSubmit =
     lengthValid &&
+    cssWithinCap &&
     submit.state.phase !== 'submitting' &&
     submit.state.phase !== 'rate_limited' &&
     poll.phase !== 'polling';
