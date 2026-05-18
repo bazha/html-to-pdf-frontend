@@ -1,3 +1,5 @@
+import type { RequestPdfOptions } from './optionsMapper';
+
 export type ApiErrorCode = 'validation' | 'rate_limit' | 'http' | 'network';
 
 export class ApiError extends Error {
@@ -27,8 +29,6 @@ export interface SubmitResult {
   file: string;
   detectedType: 'html' | 'markdown';
 }
-
-import type { RequestPdfOptions } from './optionsMapper';
 
 export type PollResult =
   | { kind: 'active'; state: string }
