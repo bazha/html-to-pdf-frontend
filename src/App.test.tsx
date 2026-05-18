@@ -29,6 +29,7 @@ beforeAll(() => {
 afterEach(() => {
   pollHits = 0;
   server.resetHandlers();
+  localStorage.clear();
 });
 afterAll(() => {
   server.close();
@@ -81,5 +82,36 @@ describe('App full flow', () => {
 
     await waitFor(() => expect(editor.value).toContain('# dropped'));
     expect(surface.classList.contains('dragover')).toBe(false);
+  });
+
+  it('sends options.format in body when user changes format', async () => {
+    let captured: { content?: string; options?: { format?: string; landscape?: boolean } } = {};
+    server.use(
+      http.post(`${API}/pdf`, async ({ request }) => {
+        captured = (await request.json()) as typeof captured;
+        return HttpResponse.json(
+          { message: 'ok', jobId: 'job-1', file: 'f.pdf', detectedType: 'html' },
+          { status: 202 },
+        );
+      }),
+    );
+
+    const user = userEvent.setup();
+    render(<App />);
+
+    const editor = screen.getByPlaceholderText(/Write or paste/i);
+    await user.type(editor, '# Hello world test content');
+
+    // Expand the options bar
+    await user.click(screen.getByRole('button', { name: /options/i }));
+
+    // Change format to Letter
+    const formatSelect = screen.getByLabelText(/page format/i) as HTMLSelectElement;
+    await user.selectOptions(formatSelect, 'Letter');
+
+    await user.click(screen.getByRole('button', { name: /^Press/i }));
+    await screen.findByRole('link', { name: /download pdf/i }, { timeout: 8000 });
+
+    expect(captured.options?.format).toBe('Letter');
   });
 });
