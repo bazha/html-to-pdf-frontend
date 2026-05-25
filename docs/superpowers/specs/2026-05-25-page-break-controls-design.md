@@ -28,11 +28,13 @@ Editor gains a dedicated thin toolbar above the textarea; its only initial actio
 ### Directive
 
 Canonical form (what the toolbar inserts):
+
 ```
 <!-- page-break -->
 ```
 
 Transform output:
+
 ```html
 <div class="pdf-page-break" style="break-before: page; page-break-before: always;"></div>
 ```
@@ -87,10 +89,18 @@ useSubmit.ts → api/optionsMapper.ts:
   font-size: 11px;
   color: #888;
 }
-.pdf-page-break::after { content: 'page break'; }
+.pdf-page-break::after {
+  content: 'page break';
+}
 @media print {
-  .pdf-page-break { border: 0; padding: 0; margin: 0; }
-  .pdf-page-break::after { content: ''; }
+  .pdf-page-break {
+    border: 0;
+    padding: 0;
+    margin: 0;
+  }
+  .pdf-page-break::after {
+    content: '';
+  }
 }
 ```
 
@@ -105,13 +115,16 @@ useSubmit.ts → api/optionsMapper.ts:
 ## Data flow
 
 **Editing**
+
 ```
 textarea onChange → Editor.props.onChange → App.setContent
                                             (raw text with the literal comment)
 ```
+
 Source of truth is the raw user-typed text. The comment is never auto-rewritten in editor state.
 
 **Insert via toolbar**
+
 ```
 EditorToolbar onClick
   → Editor.insertAtCursor('<!-- page-break -->')
@@ -121,6 +134,7 @@ EditorToolbar onClick
 ```
 
 **Preview**
+
 ```
 content prop → debounce 150 ms
   → transformPageBreaks(content)            ← seam #1
@@ -130,6 +144,7 @@ content prop → debounce 150 ms
 ```
 
 **Submit**
+
 ```
 App.handleSubmit
   → useSubmit.submit(content, options, onSuccess)
@@ -151,16 +166,16 @@ If a future PR tightens `PURIFY_OPTIONS` and accidentally strips the marker, tes
 
 ## Error handling & edge cases
 
-| Case | Behavior |
-|---|---|
-| Empty content | Transform returns empty; existing MIN=10 gate handles submit. |
-| Only a page break comment as content | Length 21 > MIN; passes submit. Produces a degenerate PDF. Acceptable. |
-| Insert pushes content over MAX | Existing warn badge fires; submit gated by `lengthValid`. No new gating. |
-| `textarea` ref null at click time | `insertAtCursor` early-returns; button is a no-op. |
-| Multiple rapid clicks | Multiple comments inserted in sequence. No debouncing. |
+| Case                                              | Behavior                                                                                                                        |
+| ------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| Empty content                                     | Transform returns empty; existing MIN=10 gate handles submit.                                                                   |
+| Only a page break comment as content              | Length 21 > MIN; passes submit. Produces a degenerate PDF. Acceptable.                                                          |
+| Insert pushes content over MAX                    | Existing warn badge fires; submit gated by `lengthValid`. No new gating.                                                        |
+| `textarea` ref null at click time                 | `insertAtCursor` early-returns; button is a no-op.                                                                              |
+| Multiple rapid clicks                             | Multiple comments inserted in sequence. No debouncing.                                                                          |
 | Literal comment inside Markdown fenced code block | Transform fires; the "code" actually becomes a real page break. Documented as a known limitation — toolbar path can't hit this. |
-| User's custom CSS targets `.pdf-page-break` | Allowed; user override of preview divider is fine. Inline `break-before: page` still wins specificity in print media. |
-| Sandbox iframe restrictions | No change. Inline `style` is permitted; class hook is permitted. |
+| User's custom CSS targets `.pdf-page-break`       | Allowed; user override of preview divider is fine. Inline `break-before: page` still wins specificity in print media.           |
+| Sandbox iframe restrictions                       | No change. Inline `style` is permitted; class hook is permitted.                                                                |
 
 ## Accessibility
 
@@ -172,22 +187,23 @@ If a future PR tightens `PURIFY_OPTIONS` and accidentally strips the marker, tes
 
 ### Layer 1 — pure transform (`pageBreaks.test.ts`, 7 cases)
 
-| # | Input | Expected |
-|---|---|---|
-| 1 | `''` | `''` |
-| 2 | `'hello'` | unchanged |
-| 3 | `'<!-- page-break -->'` | output contains `class="pdf-page-break"` AND `break-before: page` |
-| 4 | three breaks across lines | three divs |
-| 5 | `'<!--   page-break   -->'` and `'<!-- PAGE-BREAK -->'` | both match |
-| 6 | `'<!-- not a page break -->'` | unchanged |
-| 7 | `sanitizeHtml(transformPageBreaks(...))` | divs survive with class and style intact |
+| #   | Input                                                   | Expected                                                          |
+| --- | ------------------------------------------------------- | ----------------------------------------------------------------- |
+| 1   | `''`                                                    | `''`                                                              |
+| 2   | `'hello'`                                               | unchanged                                                         |
+| 3   | `'<!-- page-break -->'`                                 | output contains `class="pdf-page-break"` AND `break-before: page` |
+| 4   | three breaks across lines                               | three divs                                                        |
+| 5   | `'<!--   page-break   -->'` and `'<!-- PAGE-BREAK -->'` | both match                                                        |
+| 6   | `'<!-- not a page break -->'`                           | unchanged                                                         |
+| 7   | `sanitizeHtml(transformPageBreaks(...))`                | divs survive with class and style intact                          |
 
 ### Layer 2 — integration (additions to `App.test.tsx`, 2 cases)
 
 ```ts
-it('inserts <!-- page-break --> at cursor when toolbar button clicked');
-it('sends transformed content (with page-break div) in the submit body');
+it('inserts <!-- page-break --> at cursor when toolbar button clicked')
+it('sends transformed content (with page-break div) in the submit body')
 ```
+
 The second test uses MSW to capture the POST body (existing pattern from the `options.format` test).
 
 ### Layer 3 — manual
@@ -211,13 +227,13 @@ The second test uses MSW to capture the POST body (existing pattern from the `op
 
 ## File summary
 
-| File | Action | LOC est. |
-|---|---|---|
-| `src/utils/pageBreaks.ts` | new | ~10 |
-| `src/utils/pageBreaks.test.ts` | new | ~50 |
-| `src/components/EditorToolbar.tsx` | new | ~25 |
-| `src/components/Editor.tsx` | modify | +30/-2 |
-| `src/components/Preview.tsx` | modify | +25/-2 |
-| `src/hooks/useSubmit.ts` | modify | +2/-1 |
-| `src/theme.css` | modify | +30 |
-| `src/App.test.tsx` | modify | +40 |
+| File                               | Action | LOC est. |
+| ---------------------------------- | ------ | -------- |
+| `src/utils/pageBreaks.ts`          | new    | ~10      |
+| `src/utils/pageBreaks.test.ts`     | new    | ~50      |
+| `src/components/EditorToolbar.tsx` | new    | ~25      |
+| `src/components/Editor.tsx`        | modify | +30/-2   |
+| `src/components/Preview.tsx`       | modify | +25/-2   |
+| `src/hooks/useSubmit.ts`           | modify | +2/-1    |
+| `src/theme.css`                    | modify | +30      |
+| `src/App.test.tsx`                 | modify | +40      |
