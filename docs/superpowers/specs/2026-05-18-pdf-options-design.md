@@ -66,54 +66,54 @@ The bar uses the `grid-template-rows: 0fr → 1fr` trick for smooth expansion wi
 ### 4.1 Types (new module `src/types/pdfOptions.ts`)
 
 ```ts
-export type PageFormat = 'A4' | 'Letter' | 'Legal' | 'A3' | 'A5';
-export type MarginPreset = 'normal' | 'narrow' | 'wide' | 'none' | 'custom';
+export type PageFormat = 'A4' | 'Letter' | 'Legal' | 'A3' | 'A5'
+export type MarginPreset = 'normal' | 'narrow' | 'wide' | 'none' | 'custom'
 
 export interface Margins {
-  top: number;      // millimetres
-  right: number;
-  bottom: number;
-  left: number;
+  top: number // millimetres
+  right: number
+  bottom: number
+  left: number
 }
 
 export interface PdfOptions {
-  format: PageFormat;
-  landscape: boolean;
-  marginPreset: MarginPreset;
-  margins: Margins;
-  header: { enabled: boolean; template: string };
-  footer: { enabled: boolean; template: string };
-  printBackground: boolean;
-  css: string;
+  format: PageFormat
+  landscape: boolean
+  marginPreset: MarginPreset
+  margins: Margins
+  header: {enabled: boolean; template: string}
+  footer: {enabled: boolean; template: string}
+  printBackground: boolean
+  css: string
 }
 
 export const DEFAULTS: PdfOptions = {
   format: 'A4',
   landscape: false,
   marginPreset: 'normal',
-  margins: { top: 20, right: 20, bottom: 20, left: 20 },
-  header: { enabled: false, template: '' },
-  footer: { enabled: false, template: '{pageNumber} / {totalPages}' },
+  margins: {top: 20, right: 20, bottom: 20, left: 20},
+  header: {enabled: false, template: ''},
+  footer: {enabled: false, template: '{pageNumber} / {totalPages}'},
   printBackground: true,
   css: '',
-};
+}
 
 export const MARGIN_PRESETS: Record<Exclude<MarginPreset, 'custom'>, Margins> = {
-  normal: { top: 20, right: 20, bottom: 20, left: 20 },
-  narrow: { top: 10, right: 10, bottom: 10, left: 10 },
-  wide:   { top: 30, right: 30, bottom: 30, left: 30 },
-  none:   { top: 0,  right: 0,  bottom: 0,  left: 0 },
-};
+  normal: {top: 20, right: 20, bottom: 20, left: 20},
+  narrow: {top: 10, right: 10, bottom: 10, left: 10},
+  wide: {top: 30, right: 30, bottom: 30, left: 30},
+  none: {top: 0, right: 0, bottom: 0, left: 0},
+}
 ```
 
 ### 4.2 Hook (`src/hooks/usePdfOptions.ts`)
 
 ```ts
 export interface UsePdfOptions {
-  options: PdfOptions;
-  set: <K extends keyof PdfOptions>(key: K, value: PdfOptions[K]) => void;
-  setMargin: (side: keyof Margins, value: number) => void;
-  reset: () => void;
+  options: PdfOptions
+  set: <K extends keyof PdfOptions>(key: K, value: PdfOptions[K]) => void
+  setMargin: (side: keyof Margins, value: number) => void
+  reset: () => void
 }
 ```
 
@@ -142,13 +142,13 @@ Parse failures, version mismatches, or shape mismatches all fall back to `DEFAUL
   "options": {
     "format": "A4",
     "landscape": false,
-    "margin": { "top": "20mm", "right": "20mm", "bottom": "20mm", "left": "20mm" },
+    "margin": {"top": "20mm", "right": "20mm", "bottom": "20mm", "left": "20mm"},
     "displayHeaderFooter": true,
     "headerTemplate": "<div ...>...</div>",
     "footerTemplate": "<div ...>...</div>",
     "printBackground": true,
-    "css": "h1 { color: #c8451e; }"
-  }
+    "css": "h1 { color: #c8451e; }",
+  },
 }
 ```
 
@@ -160,28 +160,26 @@ Parse failures, version mismatches, or shape mismatches all fall back to `DEFAUL
 export const toRequestOptions = (o: PdfOptions): RequestPdfOptions => {
   // A toggle "on" with an empty template is treated as off — the user opted in
   // but never typed anything, so there's nothing to show.
-  const headerHtml = o.header.enabled && o.header.template.trim()
-    ? renderTemplate(o.header.template)
-    : '';
-  const footerHtml = o.footer.enabled && o.footer.template.trim()
-    ? renderTemplate(o.footer.template)
-    : '';
+  const headerHtml =
+    o.header.enabled && o.header.template.trim() ? renderTemplate(o.header.template) : ''
+  const footerHtml =
+    o.footer.enabled && o.footer.template.trim() ? renderTemplate(o.footer.template) : ''
   return {
     format: o.format,
     landscape: o.landscape,
     margin: {
-      top:    `${o.margins.top}mm`,
-      right:  `${o.margins.right}mm`,
+      top: `${o.margins.top}mm`,
+      right: `${o.margins.right}mm`,
       bottom: `${o.margins.bottom}mm`,
-      left:   `${o.margins.left}mm`,
+      left: `${o.margins.left}mm`,
     },
     displayHeaderFooter: Boolean(headerHtml || footerHtml),
     headerTemplate: headerHtml,
     footerTemplate: footerHtml,
     printBackground: o.printBackground,
-    ...(o.css.trim() ? { css: o.css } : {}),
-  };
-};
+    ...(o.css.trim() ? {css: o.css} : {}),
+  }
+}
 ```
 
 ### 5.3 Template rendering
@@ -227,13 +225,13 @@ The existing `.theme-switcher` CSS in `theme.css` is the pattern for orientation
 
 ## 7. Error handling
 
-| Failure | Where | Handling |
-|---|---|---|
-| Backend rejects options (400) | submit path | Existing `ApiError(code='validation')` → status row renders `Invalid. <message>` |
-| CSS exceeds 5,000 chars | client | Submit disabled, counter chip shows `over 5,000 chars` in `--warn`, hover state explains. Mirrors the existing under-MIN / over-MAX content gating in `App.tsx`. |
-| Bad localStorage JSON / shape mismatch | hook init | Try/catch around parse + shape guard. Fall back to `DEFAULTS`, console.warn, silent for user. |
-| Storage write fails (private mode) | hook effect | Try/catch. In-memory state still works for the session. |
-| Network / rate-limit / poll-timeout / failed-job | existing paths | No change. Options ride along on submit; downstream of `submitContent` doesn't know they exist. |
+| Failure                                          | Where          | Handling                                                                                                                                                         |
+| ------------------------------------------------ | -------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Backend rejects options (400)                    | submit path    | Existing `ApiError(code='validation')` → status row renders `Invalid. <message>`                                                                                 |
+| CSS exceeds 5,000 chars                          | client         | Submit disabled, counter chip shows `over 5,000 chars` in `--warn`, hover state explains. Mirrors the existing under-MIN / over-MAX content gating in `App.tsx`. |
+| Bad localStorage JSON / shape mismatch           | hook init      | Try/catch around parse + shape guard. Fall back to `DEFAULTS`, console.warn, silent for user.                                                                    |
+| Storage write fails (private mode)               | hook effect    | Try/catch. In-memory state still works for the session.                                                                                                          |
+| Network / rate-limit / poll-timeout / failed-job | existing paths | No change. Options ride along on submit; downstream of `submitContent` doesn't know they exist.                                                                  |
 
 **Deliberately not added:** per-field inline errors (only the CSS cap is a real client-side rule), toast/snackbar system (status row is sufficient), CSS syntax linting (power users author their own CSS).
 
@@ -241,12 +239,12 @@ The existing `.theme-switcher` CSS in `theme.css` is the pattern for orientation
 
 ### 8.1 New unit tests (vitest)
 
-| File | Covers |
-|---|---|
-| `src/utils/summarize.test.ts` | defaults → `"Defaults"`; single deviation; all deviations; orientation/preset wording |
-| `src/api/optionsMapper.test.ts` | mm → `"20mm"`; header/footer suppression when disabled; css omission when blank; header template substitution; footer template substitution |
-| `src/api/optionsMapper.test.ts` (renderTemplate) | escape-before-substitute order; XSS attempt → escaped output; unknown placeholder passes through as literal text |
-| `src/hooks/usePdfOptions.test.ts` | empty storage → DEFAULTS; valid stored → merged; bad JSON → DEFAULTS; missing field → DEFAULTS fills; `setMargin` forces `'custom'`; `set('marginPreset', 'narrow')` syncs `margins`; `reset()` writes defaults |
+| File                                             | Covers                                                                                                                                                                                                          |
+| ------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `src/utils/summarize.test.ts`                    | defaults → `"Defaults"`; single deviation; all deviations; orientation/preset wording                                                                                                                           |
+| `src/api/optionsMapper.test.ts`                  | mm → `"20mm"`; header/footer suppression when disabled; css omission when blank; header template substitution; footer template substitution                                                                     |
+| `src/api/optionsMapper.test.ts` (renderTemplate) | escape-before-substitute order; XSS attempt → escaped output; unknown placeholder passes through as literal text                                                                                                |
+| `src/hooks/usePdfOptions.test.ts`                | empty storage → DEFAULTS; valid stored → merged; bad JSON → DEFAULTS; missing field → DEFAULTS fills; `setMargin` forces `'custom'`; `set('marginPreset', 'narrow')` syncs `margins`; `reset()` writes defaults |
 
 ### 8.2 Integration test extension
 

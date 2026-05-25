@@ -1,753 +1,974 @@
 <!doctype html>
 <html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Quire — html &amp; markdown, properly typeset</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,400&family=Fraunces:opsz,wght,SOFT@9..144,300..900,0..100&display=swap" rel="stylesheet">
-<style>
-  :root {
-    --paper:     #f3ede2;
-    --paper-2:   #ece4d4;
-    --paper-rule:#d8ccb4;
-    --ink:       #1a1614;
-    --ink-2:     #3a322c;
-    --ink-dim:   #7a6f63;
-    --ink-faint: #b9ad9c;
-    --accent:    #a8261e;
-    --accent-2:  #8a1f18;
-    --blue:      #2a3f5c;
-    --olive:     #6b6324;
-    --serif:     'Instrument Serif', 'Times New Roman', serif;
-    --mono:      'DM Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
-    --soft-serif:'Fraunces', 'Instrument Serif', serif;
-    --rule:      1px solid var(--paper-rule);
-    --rule-ink:  1px solid var(--ink);
-    --shadow-press: 0 1px 0 rgba(26,22,20,.7), 0 6px 14px -8px rgba(26,22,20,.45);
-  }
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>Quire — html &amp; markdown, properly typeset</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,400&family=Fraunces:opsz,wght,SOFT@9..144,300..900,0..100&display=swap"
+            rel="stylesheet"
+        />
+        <style>
+            :root {
+                --paper: #f3ede2;
+                --paper-2: #ece4d4;
+                --paper-rule: #d8ccb4;
+                --ink: #1a1614;
+                --ink-2: #3a322c;
+                --ink-dim: #7a6f63;
+                --ink-faint: #b9ad9c;
+                --accent: #a8261e;
+                --accent-2: #8a1f18;
+                --blue: #2a3f5c;
+                --olive: #6b6324;
+                --serif: 'Instrument Serif', 'Times New Roman', serif;
+                --mono: 'DM Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+                --soft-serif: 'Fraunces', 'Instrument Serif', serif;
+                --rule: 1px solid var(--paper-rule);
+                --rule-ink: 1px solid var(--ink);
+                --shadow-press:
+                    0 1px 0 rgba(26, 22, 20, 0.7), 0 6px 14px -8px rgba(26, 22, 20, 0.45);
+            }
 
-  * { box-sizing: border-box; }
-  html, body { margin: 0; height: 100%; }
-  body {
-    font-family: var(--mono);
-    font-size: 13px;
-    color: var(--ink);
-    background: var(--paper);
-    background-image:
-      radial-gradient(at 20% 10%, rgba(168,38,30,.04), transparent 40%),
-      radial-gradient(at 90% 85%, rgba(42,63,92,.05), transparent 45%);
-    /* paper grain */
-    position: relative;
-    overflow-x: hidden;
-  }
-  /* film-grain overlay */
-  body::before {
-    content: "";
-    position: fixed;
-    inset: 0;
-    pointer-events: none;
-    z-index: 100;
-    opacity: .35;
-    mix-blend-mode: multiply;
-    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .1  0 0 0 0 .09  0 0 0 0 .08  0 0 0 .25 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
-  }
-  /* cursor ink-dot trail dots */
-  .ink-dot {
-    position: fixed;
-    width: 6px; height: 6px;
-    border-radius: 50%;
-    background: rgba(26,22,20,.55);
-    pointer-events: none;
-    z-index: 200;
-    transform: translate(-50%, -50%) scale(1);
-    transition: transform 700ms ease-out, opacity 700ms ease-out;
-  }
+            * {
+                box-sizing: border-box;
+            }
+            html,
+            body {
+                margin: 0;
+                height: 100%;
+            }
+            body {
+                font-family: var(--mono);
+                font-size: 13px;
+                color: var(--ink);
+                background: var(--paper);
+                background-image:
+                    radial-gradient(at 20% 10%, rgba(168, 38, 30, 0.04), transparent 40%),
+                    radial-gradient(at 90% 85%, rgba(42, 63, 92, 0.05), transparent 45%);
+                /* paper grain */
+                position: relative;
+                overflow-x: hidden;
+            }
+            /* film-grain overlay */
+            body::before {
+                content: '';
+                position: fixed;
+                inset: 0;
+                pointer-events: none;
+                z-index: 100;
+                opacity: 0.35;
+                mix-blend-mode: multiply;
+                background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .1  0 0 0 0 .09  0 0 0 0 .08  0 0 0 .25 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+            }
+            /* cursor ink-dot trail dots */
+            .ink-dot {
+                position: fixed;
+                width: 6px;
+                height: 6px;
+                border-radius: 50%;
+                background: rgba(26, 22, 20, 0.55);
+                pointer-events: none;
+                z-index: 200;
+                transform: translate(-50%, -50%) scale(1);
+                transition:
+                    transform 700ms ease-out,
+                    opacity 700ms ease-out;
+            }
 
-  ::selection { background: var(--ink); color: var(--paper); }
+            ::selection {
+                background: var(--ink);
+                color: var(--paper);
+            }
 
-  /* === masthead === */
-  header.masthead {
-    padding: 40px 56px 22px;
-    border-bottom: var(--rule-ink);
-    display: grid;
-    grid-template-columns: auto 1fr auto;
-    gap: 28px;
-    align-items: end;
-    background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(216,204,180,.18) 100%);
-  }
-  .masthead .wordmark {
-    font-family: var(--serif);
-    font-style: italic;
-    font-weight: 400;
-    font-size: 88px;
-    line-height: .9;
-    letter-spacing: -.01em;
-    color: var(--ink);
-    display: inline-flex;
-    align-items: baseline;
-    gap: 8px;
-  }
-  .masthead .wordmark sup {
-    font-family: var(--mono);
-    font-style: normal;
-    font-size: 12px;
-    color: var(--accent);
-    letter-spacing: .12em;
-    text-transform: uppercase;
-    transform: translateY(-2.6em);
-    font-weight: 400;
-  }
-  .masthead .tagline {
-    font-family: var(--serif);
-    font-style: italic;
-    font-size: 18px;
-    color: var(--ink-dim);
-    border-top: 1px solid var(--ink);
-    padding-top: 8px;
-    max-width: 36ch;
-    align-self: end;
-    line-height: 1.35;
-  }
-  .masthead .edition {
-    text-align: right;
-    font-family: var(--mono);
-    font-size: 10px;
-    text-transform: uppercase;
-    letter-spacing: .18em;
-    color: var(--ink-2);
-    line-height: 1.7;
-  }
-  .masthead .edition strong { color: var(--ink); font-weight: 500; }
-  .masthead .edition .rule { display: block; height: 1px; background: var(--ink); margin: 6px 0; }
+            /* === masthead === */
+            header.masthead {
+                padding: 40px 56px 22px;
+                border-bottom: var(--rule-ink);
+                display: grid;
+                grid-template-columns: auto 1fr auto;
+                gap: 28px;
+                align-items: end;
+                background: linear-gradient(
+                    180deg,
+                    rgba(0, 0, 0, 0) 0%,
+                    rgba(216, 204, 180, 0.18) 100%
+                );
+            }
+            .masthead .wordmark {
+                font-family: var(--serif);
+                font-style: italic;
+                font-weight: 400;
+                font-size: 88px;
+                line-height: 0.9;
+                letter-spacing: -0.01em;
+                color: var(--ink);
+                display: inline-flex;
+                align-items: baseline;
+                gap: 8px;
+            }
+            .masthead .wordmark sup {
+                font-family: var(--mono);
+                font-style: normal;
+                font-size: 12px;
+                color: var(--accent);
+                letter-spacing: 0.12em;
+                text-transform: uppercase;
+                transform: translateY(-2.6em);
+                font-weight: 400;
+            }
+            .masthead .tagline {
+                font-family: var(--serif);
+                font-style: italic;
+                font-size: 18px;
+                color: var(--ink-dim);
+                border-top: 1px solid var(--ink);
+                padding-top: 8px;
+                max-width: 36ch;
+                align-self: end;
+                line-height: 1.35;
+            }
+            .masthead .edition {
+                text-align: right;
+                font-family: var(--mono);
+                font-size: 10px;
+                text-transform: uppercase;
+                letter-spacing: 0.18em;
+                color: var(--ink-2);
+                line-height: 1.7;
+            }
+            .masthead .edition strong {
+                color: var(--ink);
+                font-weight: 500;
+            }
+            .masthead .edition .rule {
+                display: block;
+                height: 1px;
+                background: var(--ink);
+                margin: 6px 0;
+            }
 
-  /* sub-rule under masthead — double-line print style */
-  .masthead-rules { padding: 0 56px; }
-  .masthead-rules .line {
-    height: 1px;
-    background: var(--ink);
-    margin-top: 3px;
-  }
-  .masthead-rules .line.thin { height: 1px; background: var(--ink-dim); }
+            /* sub-rule under masthead — double-line print style */
+            .masthead-rules {
+                padding: 0 56px;
+            }
+            .masthead-rules .line {
+                height: 1px;
+                background: var(--ink);
+                margin-top: 3px;
+            }
+            .masthead-rules .line.thin {
+                height: 1px;
+                background: var(--ink-dim);
+            }
 
-  /* === folio bar === */
-  .folio {
-    padding: 22px 56px 16px;
-    display: grid;
-    grid-template-columns: 1fr auto;
-    align-items: center;
-    gap: 24px;
-    border-bottom: var(--rule);
-  }
-  .tabs {
-    display: flex;
-    gap: 18px;
-    align-items: baseline;
-  }
-  .tab {
-    cursor: pointer;
-    user-select: none;
-    font-family: var(--serif);
-    font-size: 24px;
-    line-height: 1;
-    color: var(--ink-faint);
-    transition: color 240ms ease;
-    position: relative;
-    padding-bottom: 6px;
-    letter-spacing: .005em;
-  }
-  .tab .num {
-    font-style: italic;
-    margin-right: 6px;
-  }
-  .tab .name {
-    font-family: var(--mono);
-    font-size: 11px;
-    text-transform: uppercase;
-    letter-spacing: .22em;
-    vertical-align: 4px;
-  }
-  .tab:hover { color: var(--ink-2); }
-  .tab.active { color: var(--ink); }
-  .tab.active::after {
-    content: "";
-    position: absolute;
-    left: 0; right: 0; bottom: -1px;
-    height: 2px;
-    background: var(--ink);
-  }
-  .tab .name::before { content: "·"; margin-right: 8px; color: var(--ink-faint); }
-  .tab.active .name::before { color: var(--ink); }
+            /* === folio bar === */
+            .folio {
+                padding: 22px 56px 16px;
+                display: grid;
+                grid-template-columns: 1fr auto;
+                align-items: center;
+                gap: 24px;
+                border-bottom: var(--rule);
+            }
+            .tabs {
+                display: flex;
+                gap: 18px;
+                align-items: baseline;
+            }
+            .tab {
+                cursor: pointer;
+                user-select: none;
+                font-family: var(--serif);
+                font-size: 24px;
+                line-height: 1;
+                color: var(--ink-faint);
+                transition: color 240ms ease;
+                position: relative;
+                padding-bottom: 6px;
+                letter-spacing: 0.005em;
+            }
+            .tab .num {
+                font-style: italic;
+                margin-right: 6px;
+            }
+            .tab .name {
+                font-family: var(--mono);
+                font-size: 11px;
+                text-transform: uppercase;
+                letter-spacing: 0.22em;
+                vertical-align: 4px;
+            }
+            .tab:hover {
+                color: var(--ink-2);
+            }
+            .tab.active {
+                color: var(--ink);
+            }
+            .tab.active::after {
+                content: '';
+                position: absolute;
+                left: 0;
+                right: 0;
+                bottom: -1px;
+                height: 2px;
+                background: var(--ink);
+            }
+            .tab .name::before {
+                content: '·';
+                margin-right: 8px;
+                color: var(--ink-faint);
+            }
+            .tab.active .name::before {
+                color: var(--ink);
+            }
 
-  .toolset {
-    display: flex;
-    align-items: center;
-    gap: 18px;
-  }
-  .meta {
-    display: flex;
-    align-items: baseline;
-    gap: 14px;
-    font-family: var(--mono);
-    font-size: 11px;
-    color: var(--ink-dim);
-    letter-spacing: .04em;
-  }
-  .meta .folio-no {
-    font-family: var(--soft-serif);
-    font-variation-settings: "opsz" 144, "SOFT" 0, "wght" 400;
-    font-size: 28px;
-    line-height: 1;
-    color: var(--ink);
-    letter-spacing: -.01em;
-  }
-  .meta .folio-no.warn { color: var(--accent); }
-  .meta em.cap {
-    font-family: var(--mono);
-    font-style: normal;
-    text-transform: uppercase;
-    letter-spacing: .22em;
-    font-size: 10px;
-    padding: 3px 10px;
-    border: 1px solid var(--ink);
-    color: var(--ink);
-    background: transparent;
-  }
+            .toolset {
+                display: flex;
+                align-items: center;
+                gap: 18px;
+            }
+            .meta {
+                display: flex;
+                align-items: baseline;
+                gap: 14px;
+                font-family: var(--mono);
+                font-size: 11px;
+                color: var(--ink-dim);
+                letter-spacing: 0.04em;
+            }
+            .meta .folio-no {
+                font-family: var(--soft-serif);
+                font-variation-settings:
+                    'opsz' 144,
+                    'SOFT' 0,
+                    'wght' 400;
+                font-size: 28px;
+                line-height: 1;
+                color: var(--ink);
+                letter-spacing: -0.01em;
+            }
+            .meta .folio-no.warn {
+                color: var(--accent);
+            }
+            .meta em.cap {
+                font-family: var(--mono);
+                font-style: normal;
+                text-transform: uppercase;
+                letter-spacing: 0.22em;
+                font-size: 10px;
+                padding: 3px 10px;
+                border: 1px solid var(--ink);
+                color: var(--ink);
+                background: transparent;
+            }
 
-  /* === Workbench === */
-  main.workbench {
-    padding: 28px 56px 28px;
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 22px;
-    min-height: calc(100vh - 270px);
-  }
-  .pane {
-    background: var(--paper);
-    border: 1px solid var(--paper-rule);
-    border-radius: 2px;
-    overflow: hidden;
-    position: relative;
-    min-height: 480px;
-  }
-  .pane::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    box-shadow: inset 0 1px 0 rgba(255,255,255,.6), inset 0 0 0 1px rgba(216,204,180,.2);
-  }
+            /* === Workbench === */
+            main.workbench {
+                padding: 28px 56px 28px;
+                display: grid;
+                grid-template-columns: 1fr;
+                gap: 22px;
+                min-height: calc(100vh - 270px);
+            }
+            .pane {
+                background: var(--paper);
+                border: 1px solid var(--paper-rule);
+                border-radius: 2px;
+                overflow: hidden;
+                position: relative;
+                min-height: 480px;
+            }
+            .pane::before {
+                content: '';
+                position: absolute;
+                inset: 0;
+                pointer-events: none;
+                box-shadow:
+                    inset 0 1px 0 rgba(255, 255, 255, 0.6),
+                    inset 0 0 0 1px rgba(216, 204, 180, 0.2);
+            }
 
-  .editor-wrap {
-    display: grid;
-    grid-template-columns: 56px 1fr;
-    height: 100%;
-  }
-  .line-numbers {
-    background: var(--paper-2);
-    border-right: 1px dashed var(--paper-rule);
-    padding: 18px 8px;
-    font-family: var(--mono);
-    font-size: 11px;
-    color: var(--ink-faint);
-    text-align: right;
-    user-select: none;
-    line-height: 1.8;
-  }
-  .editor {
-    border: 0;
-    outline: 0;
-    width: 100%;
-    height: 100%;
-    min-height: 480px;
-    background: var(--paper);
-    color: var(--ink);
-    padding: 18px 24px;
-    font-family: var(--mono);
-    font-size: 13px;
-    line-height: 1.8;
-    resize: none;
-    letter-spacing: -.01em;
-  }
-  .editor::placeholder {
-    color: var(--ink-faint);
-    font-style: italic;
-    font-family: var(--serif);
-    font-size: 22px;
-    line-height: 1.5;
-  }
+            .editor-wrap {
+                display: grid;
+                grid-template-columns: 56px 1fr;
+                height: 100%;
+            }
+            .line-numbers {
+                background: var(--paper-2);
+                border-right: 1px dashed var(--paper-rule);
+                padding: 18px 8px;
+                font-family: var(--mono);
+                font-size: 11px;
+                color: var(--ink-faint);
+                text-align: right;
+                user-select: none;
+                line-height: 1.8;
+            }
+            .editor {
+                border: 0;
+                outline: 0;
+                width: 100%;
+                height: 100%;
+                min-height: 480px;
+                background: var(--paper);
+                color: var(--ink);
+                padding: 18px 24px;
+                font-family: var(--mono);
+                font-size: 13px;
+                line-height: 1.8;
+                resize: none;
+                letter-spacing: -0.01em;
+            }
+            .editor::placeholder {
+                color: var(--ink-faint);
+                font-style: italic;
+                font-family: var(--serif);
+                font-size: 22px;
+                line-height: 1.5;
+            }
 
-  /* preview rendered like a tip-in spread */
-  .preview-wrap {
-    display: none;
-    height: 100%;
-    background: repeating-linear-gradient(45deg, var(--paper-2) 0 1px, transparent 1px 12px);
-    padding: 30px;
-  }
-  .preview-wrap.active { display: block; }
-  .preview-sheet {
-    background: #fff;
-    border: 1px solid var(--paper-rule);
-    box-shadow: 0 18px 40px -28px rgba(26,22,20,.5), 0 2px 0 rgba(26,22,20,.04);
-    min-height: 420px;
-    max-width: 720px;
-    margin: 0 auto;
-    padding: 36px 44px;
-    font-family: var(--serif);
-    color: var(--ink);
-    line-height: 1.55;
-    position: relative;
-  }
-  .preview-sheet h1 {
-    font-family: var(--serif);
-    font-style: italic;
-    font-size: 38px;
-    line-height: 1.05;
-    margin: 0 0 18px;
-    letter-spacing: -.005em;
-  }
-  .preview-sheet p { font-family: var(--serif); font-size: 16px; }
-  .preview-sheet p.lead::first-letter {
-    font-family: var(--serif);
-    font-style: italic;
-    font-size: 64px;
-    float: left;
-    line-height: .85;
-    padding: 6px 8px 0 0;
-    color: var(--accent);
-  }
-  .preview-sheet ul { font-family: var(--serif); font-size: 16px; padding-left: 1.2em; }
-  .preview-sheet code, .preview-sheet pre {
-    font-family: var(--mono);
-    background: var(--paper-2);
-    padding: 1px 6px;
-    border-radius: 2px;
-    font-size: 13px;
-  }
-  .preview-sheet .folio-mark {
-    position: absolute;
-    top: 14px;
-    right: 18px;
-    font-family: var(--mono);
-    font-size: 10px;
-    letter-spacing: .22em;
-    text-transform: uppercase;
-    color: var(--ink-dim);
-  }
+            /* preview rendered like a tip-in spread */
+            .preview-wrap {
+                display: none;
+                height: 100%;
+                background: repeating-linear-gradient(
+                    45deg,
+                    var(--paper-2) 0 1px,
+                    transparent 1px 12px
+                );
+                padding: 30px;
+            }
+            .preview-wrap.active {
+                display: block;
+            }
+            .preview-sheet {
+                background: #fff;
+                border: 1px solid var(--paper-rule);
+                box-shadow:
+                    0 18px 40px -28px rgba(26, 22, 20, 0.5),
+                    0 2px 0 rgba(26, 22, 20, 0.04);
+                min-height: 420px;
+                max-width: 720px;
+                margin: 0 auto;
+                padding: 36px 44px;
+                font-family: var(--serif);
+                color: var(--ink);
+                line-height: 1.55;
+                position: relative;
+            }
+            .preview-sheet h1 {
+                font-family: var(--serif);
+                font-style: italic;
+                font-size: 38px;
+                line-height: 1.05;
+                margin: 0 0 18px;
+                letter-spacing: -0.005em;
+            }
+            .preview-sheet p {
+                font-family: var(--serif);
+                font-size: 16px;
+            }
+            .preview-sheet p.lead::first-letter {
+                font-family: var(--serif);
+                font-style: italic;
+                font-size: 64px;
+                float: left;
+                line-height: 0.85;
+                padding: 6px 8px 0 0;
+                color: var(--accent);
+            }
+            .preview-sheet ul {
+                font-family: var(--serif);
+                font-size: 16px;
+                padding-left: 1.2em;
+            }
+            .preview-sheet code,
+            .preview-sheet pre {
+                font-family: var(--mono);
+                background: var(--paper-2);
+                padding: 1px 6px;
+                border-radius: 2px;
+                font-size: 13px;
+            }
+            .preview-sheet .folio-mark {
+                position: absolute;
+                top: 14px;
+                right: 18px;
+                font-family: var(--mono);
+                font-size: 10px;
+                letter-spacing: 0.22em;
+                text-transform: uppercase;
+                color: var(--ink-dim);
+            }
 
-  /* === imprimatur (submit) === */
-  .imprimatur {
-    cursor: pointer;
-    border: 0;
-    background: var(--ink);
-    color: var(--paper);
-    padding: 14px 26px;
-    border-radius: 2px;
-    font-family: var(--soft-serif);
-    font-variation-settings: "opsz" 96, "wght" 500, "SOFT" 30;
-    font-size: 18px;
-    letter-spacing: .005em;
-    line-height: 1;
-    position: relative;
-    box-shadow: var(--shadow-press);
-    transition: transform 120ms ease, box-shadow 120ms ease, background 200ms ease;
-  }
-  .imprimatur::after {
-    content: "";
-    position: absolute;
-    inset: -1px;
-    border-radius: 2px;
-    border: 1px solid rgba(243,237,226,.18);
-    pointer-events: none;
-  }
-  .imprimatur small {
-    font-family: var(--mono);
-    font-variation-settings: normal;
-    font-style: normal;
-    font-size: 10px;
-    letter-spacing: .22em;
-    text-transform: uppercase;
-    display: block;
-    color: rgba(243,237,226,.55);
-    margin-top: 2px;
-    font-weight: 400;
-  }
-  .imprimatur:hover {
-    background: var(--accent-2);
-    transform: translateY(-1px);
-    box-shadow: 0 2px 0 var(--ink), 0 12px 22px -10px rgba(168,38,30,.45);
-  }
-  .imprimatur:active {
-    transform: translateY(2px);
-    box-shadow: 0 0 0 var(--ink), 0 2px 6px -2px rgba(26,22,20,.6);
-  }
-  .imprimatur:disabled {
-    background: var(--paper-2);
-    color: var(--ink-dim);
-    box-shadow: inset 0 0 0 1px var(--paper-rule);
-    cursor: not-allowed;
-    transform: none;
-  }
-  .imprimatur:disabled small { color: var(--ink-faint); }
+            /* === imprimatur (submit) === */
+            .imprimatur {
+                cursor: pointer;
+                border: 0;
+                background: var(--ink);
+                color: var(--paper);
+                padding: 14px 26px;
+                border-radius: 2px;
+                font-family: var(--soft-serif);
+                font-variation-settings:
+                    'opsz' 96,
+                    'wght' 500,
+                    'SOFT' 30;
+                font-size: 18px;
+                letter-spacing: 0.005em;
+                line-height: 1;
+                position: relative;
+                box-shadow: var(--shadow-press);
+                transition:
+                    transform 120ms ease,
+                    box-shadow 120ms ease,
+                    background 200ms ease;
+            }
+            .imprimatur::after {
+                content: '';
+                position: absolute;
+                inset: -1px;
+                border-radius: 2px;
+                border: 1px solid rgba(243, 237, 226, 0.18);
+                pointer-events: none;
+            }
+            .imprimatur small {
+                font-family: var(--mono);
+                font-variation-settings: normal;
+                font-style: normal;
+                font-size: 10px;
+                letter-spacing: 0.22em;
+                text-transform: uppercase;
+                display: block;
+                color: rgba(243, 237, 226, 0.55);
+                margin-top: 2px;
+                font-weight: 400;
+            }
+            .imprimatur:hover {
+                background: var(--accent-2);
+                transform: translateY(-1px);
+                box-shadow:
+                    0 2px 0 var(--ink),
+                    0 12px 22px -10px rgba(168, 38, 30, 0.45);
+            }
+            .imprimatur:active {
+                transform: translateY(2px);
+                box-shadow:
+                    0 0 0 var(--ink),
+                    0 2px 6px -2px rgba(26, 22, 20, 0.6);
+            }
+            .imprimatur:disabled {
+                background: var(--paper-2);
+                color: var(--ink-dim);
+                box-shadow: inset 0 0 0 1px var(--paper-rule);
+                cursor: not-allowed;
+                transform: none;
+            }
+            .imprimatur:disabled small {
+                color: var(--ink-faint);
+            }
 
-  /* === status caption (footer) === */
-  footer.colophon {
-    border-top: var(--rule-ink);
-    padding: 14px 56px 18px;
-    display: grid;
-    grid-template-columns: 1fr auto;
-    gap: 32px;
-    align-items: end;
-    background: linear-gradient(0deg, rgba(216,204,180,.25), transparent);
-  }
-  .caption {
-    font-family: var(--serif);
-    font-style: italic;
-    font-size: 19px;
-    color: var(--ink);
-    letter-spacing: .005em;
-    line-height: 1.35;
-    position: relative;
-    padding-right: 20px;
-  }
-  .caption .leader {
-    display: inline-block;
-    width: 64px;
-    border-bottom: 2px dotted var(--ink-dim);
-    transform: translateY(-5px);
-    margin: 0 14px 0 6px;
-  }
-  .caption.error { color: var(--accent); }
-  .caption.error .leader { border-color: var(--accent); }
-  .caption a {
-    color: var(--ink);
-    text-decoration: none;
-    border-bottom: 1px solid var(--ink);
-    padding-bottom: 1px;
-    font-style: italic;
-  }
-  .caption a:hover { color: var(--accent); border-bottom-color: var(--accent); }
+            /* === status caption (footer) === */
+            footer.colophon {
+                border-top: var(--rule-ink);
+                padding: 14px 56px 18px;
+                display: grid;
+                grid-template-columns: 1fr auto;
+                gap: 32px;
+                align-items: end;
+                background: linear-gradient(0deg, rgba(216, 204, 180, 0.25), transparent);
+            }
+            .caption {
+                font-family: var(--serif);
+                font-style: italic;
+                font-size: 19px;
+                color: var(--ink);
+                letter-spacing: 0.005em;
+                line-height: 1.35;
+                position: relative;
+                padding-right: 20px;
+            }
+            .caption .leader {
+                display: inline-block;
+                width: 64px;
+                border-bottom: 2px dotted var(--ink-dim);
+                transform: translateY(-5px);
+                margin: 0 14px 0 6px;
+            }
+            .caption.error {
+                color: var(--accent);
+            }
+            .caption.error .leader {
+                border-color: var(--accent);
+            }
+            .caption a {
+                color: var(--ink);
+                text-decoration: none;
+                border-bottom: 1px solid var(--ink);
+                padding-bottom: 1px;
+                font-style: italic;
+            }
+            .caption a:hover {
+                color: var(--accent);
+                border-bottom-color: var(--accent);
+            }
 
-  .colophon .marks {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    font-family: var(--mono);
-    font-size: 10px;
-    color: var(--ink-dim);
-    text-transform: uppercase;
-    letter-spacing: .22em;
-  }
-  .colophon .marks .seal {
-    font-family: var(--serif);
-    font-style: italic;
-    font-size: 32px;
-    color: var(--accent);
-    line-height: 1;
-    padding-right: 14px;
-    border-right: 1px solid var(--paper-rule);
-    transform: translateY(2px);
-  }
+            .colophon .marks {
+                display: flex;
+                align-items: center;
+                gap: 16px;
+                font-family: var(--mono);
+                font-size: 10px;
+                color: var(--ink-dim);
+                text-transform: uppercase;
+                letter-spacing: 0.22em;
+            }
+            .colophon .marks .seal {
+                font-family: var(--serif);
+                font-style: italic;
+                font-size: 32px;
+                color: var(--accent);
+                line-height: 1;
+                padding-right: 14px;
+                border-right: 1px solid var(--paper-rule);
+                transform: translateY(2px);
+            }
 
-  /* === demo state cycler === */
-  .demo-bar {
-    position: fixed;
-    bottom: 14px;
-    right: 14px;
-    z-index: 50;
-    display: flex;
-    gap: 8px;
-    background: var(--ink);
-    color: var(--paper);
-    padding: 8px 10px;
-    border-radius: 2px;
-    font-family: var(--mono);
-    font-size: 10px;
-    letter-spacing: .18em;
-    text-transform: uppercase;
-    box-shadow: 0 12px 28px -14px rgba(26,22,20,.5);
-  }
-  .demo-bar button {
-    background: transparent;
-    border: 1px solid rgba(243,237,226,.25);
-    color: var(--paper);
-    padding: 4px 8px;
-    font: inherit;
-    cursor: pointer;
-    border-radius: 1px;
-  }
-  .demo-bar button.on {
-    background: var(--paper);
-    color: var(--ink);
-    border-color: var(--paper);
-  }
+            /* === demo state cycler === */
+            .demo-bar {
+                position: fixed;
+                bottom: 14px;
+                right: 14px;
+                z-index: 50;
+                display: flex;
+                gap: 8px;
+                background: var(--ink);
+                color: var(--paper);
+                padding: 8px 10px;
+                border-radius: 2px;
+                font-family: var(--mono);
+                font-size: 10px;
+                letter-spacing: 0.18em;
+                text-transform: uppercase;
+                box-shadow: 0 12px 28px -14px rgba(26, 22, 20, 0.5);
+            }
+            .demo-bar button {
+                background: transparent;
+                border: 1px solid rgba(243, 237, 226, 0.25);
+                color: var(--paper);
+                padding: 4px 8px;
+                font: inherit;
+                cursor: pointer;
+                border-radius: 1px;
+            }
+            .demo-bar button.on {
+                background: var(--paper);
+                color: var(--ink);
+                border-color: var(--paper);
+            }
 
-  /* === entry animations === */
-  @keyframes lift {
-    from { opacity: 0; transform: translateY(8px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-  .masthead, .folio, .workbench, .colophon {
-    animation: lift 700ms cubic-bezier(.2,.7,.2,1) both;
-  }
-  .folio    { animation-delay: 110ms; }
-  .workbench{ animation-delay: 200ms; }
-  .colophon { animation-delay: 320ms; }
+            /* === entry animations === */
+            @keyframes lift {
+                from {
+                    opacity: 0;
+                    transform: translateY(8px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+            .masthead,
+            .folio,
+            .workbench,
+            .colophon {
+                animation: lift 700ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+            }
+            .folio {
+                animation-delay: 110ms;
+            }
+            .workbench {
+                animation-delay: 200ms;
+            }
+            .colophon {
+                animation-delay: 320ms;
+            }
 
-  @keyframes blink-caret {
-    0%,49% { opacity: 1; }
-    50%,100% { opacity: 0; }
-  }
-  .caret { animation: blink-caret 1.1s steps(1) infinite; color: var(--ink-dim); }
+            @keyframes blink-caret {
+                0%,
+                49% {
+                    opacity: 1;
+                }
+                50%,
+                100% {
+                    opacity: 0;
+                }
+            }
+            .caret {
+                animation: blink-caret 1.1s steps(1) infinite;
+                color: var(--ink-dim);
+            }
 
-  /* spinner: tiny ink swatch */
-  .ink-spinner {
-    display: inline-block;
-    width: 8px; height: 8px;
-    background: var(--ink);
-    margin-right: 8px;
-    vertical-align: 1px;
-    animation: pulse 900ms ease-in-out infinite alternate;
-  }
-  @keyframes pulse {
-    from { opacity: .25; transform: scale(.85); }
-    to   { opacity: 1; transform: scale(1.05); }
-  }
+            /* spinner: tiny ink swatch */
+            .ink-spinner {
+                display: inline-block;
+                width: 8px;
+                height: 8px;
+                background: var(--ink);
+                margin-right: 8px;
+                vertical-align: 1px;
+                animation: pulse 900ms ease-in-out infinite alternate;
+            }
+            @keyframes pulse {
+                from {
+                    opacity: 0.25;
+                    transform: scale(0.85);
+                }
+                to {
+                    opacity: 1;
+                    transform: scale(1.05);
+                }
+            }
 
-  /* small-screen sanity */
-  @media (max-width: 760px) {
-    .masthead { padding: 24px 22px 14px; grid-template-columns: 1fr; }
-    .masthead .wordmark { font-size: 60px; }
-    .masthead-rules, .folio, .workbench, .colophon { padding-left: 22px; padding-right: 22px; }
-    .editor-wrap { grid-template-columns: 36px 1fr; }
-    .line-numbers { font-size: 10px; }
-  }
-</style>
-</head>
-<body>
+            /* small-screen sanity */
+            @media (max-width: 760px) {
+                .masthead {
+                    padding: 24px 22px 14px;
+                    grid-template-columns: 1fr;
+                }
+                .masthead .wordmark {
+                    font-size: 60px;
+                }
+                .masthead-rules,
+                .folio,
+                .workbench,
+                .colophon {
+                    padding-left: 22px;
+                    padding-right: 22px;
+                }
+                .editor-wrap {
+                    grid-template-columns: 36px 1fr;
+                }
+                .line-numbers {
+                    font-size: 10px;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <header class="masthead">
+            <div class="wordmark" aria-label="Quire">Quire<sup>™</sup></div>
+            <div class="tagline">
+                A small atelier that sets your <em>html &amp; markdown</em> into proper, presigned,
+                single-sheet PDFs.
+            </div>
+            <div class="edition">
+                <div><strong>Vol. I</strong> &nbsp;·&nbsp; Issue I</div>
+                <div class="rule"></div>
+                <div id="today">— · —</div>
+                <div>Pressroom open · localhost:5173</div>
+            </div>
+        </header>
+        <div class="masthead-rules">
+            <div class="line"></div>
+            <div class="line thin"></div>
+        </div>
 
-<header class="masthead">
-  <div class="wordmark" aria-label="Quire">Quire<sup>™</sup></div>
-  <div class="tagline">
-    A small atelier that sets your <em>html &amp; markdown</em> into proper, presigned, single-sheet PDFs.
-  </div>
-  <div class="edition">
-    <div><strong>Vol. I</strong> &nbsp;·&nbsp; Issue I</div>
-    <div class="rule"></div>
-    <div id="today">— · —</div>
-    <div>Pressroom open · localhost:5173</div>
-  </div>
-</header>
-<div class="masthead-rules">
-  <div class="line"></div>
-  <div class="line thin"></div>
-</div>
+        <section class="folio">
+            <div class="tabs" role="tablist">
+                <div class="tab active" data-tab="editor" role="tab">
+                    <span class="num">I.</span><span class="name">Manuscript</span>
+                </div>
+                <div class="tab" data-tab="preview" role="tab">
+                    <span class="num">II.</span><span class="name">Proof</span>
+                </div>
+            </div>
+            <div class="toolset">
+                <div class="meta">
+                    <span class="folio-no" id="charCount">— · 0 / 50 000</span>
+                    <em class="cap" id="detectedType">markdown</em>
+                </div>
+                <button class="imprimatur" id="submitBtn" type="button">
+                    Set &amp; Press<small>⌘/Ctrl + ↵</small>
+                </button>
+            </div>
+        </section>
 
-<section class="folio">
-  <div class="tabs" role="tablist">
-    <div class="tab active" data-tab="editor" role="tab"><span class="num">I.</span><span class="name">Manuscript</span></div>
-    <div class="tab" data-tab="preview" role="tab"><span class="num">II.</span><span class="name">Proof</span></div>
-  </div>
-  <div class="toolset">
-    <div class="meta">
-      <span class="folio-no" id="charCount">— · 0 / 50 000</span>
-      <em class="cap" id="detectedType">markdown</em>
-    </div>
-    <button class="imprimatur" id="submitBtn" type="button">
-      Set &amp; Press<small>⌘/Ctrl + ↵</small>
-    </button>
-  </div>
-</section>
+        <main class="workbench">
+            <div class="pane">
+                <div class="editor-wrap" id="editorWrap">
+                    <pre class="line-numbers" id="lineNumbers">1</pre>
+                    <textarea
+                        class="editor"
+                        id="editor"
+                        spellcheck="false"
+                        placeholder="Set your manuscript here — html or markdown, 10–50 000 characters. The press waits."
+                    ></textarea>
+                </div>
+                <div class="preview-wrap" id="previewWrap">
+                    <article class="preview-sheet">
+                        <div class="folio-mark">Proof · Folio I</div>
+                        <h1>An Editorial Proof</h1>
+                        <p class="lead">
+                            This is the proof sheet — exactly the typeset content that will be
+                            pressed to PDF, sandboxed and rendered in a sealed frame.
+                        </p>
+                        <p>
+                            Headlines come out in italic. Paragraphs in old-style serif. Code stays
+                            monospaced.
+                        </p>
+                        <ul>
+                            <li>Item the first</li>
+                            <li>Item the second</li>
+                            <li>Item the third</li>
+                        </ul>
+                        <p>
+                            The preview updates with a quiet 150 ms debounce — nothing flashes; the
+                            page only ever <em>settles</em>.
+                        </p>
+                    </article>
+                </div>
+            </div>
+        </main>
 
-<main class="workbench">
-  <div class="pane">
-    <div class="editor-wrap" id="editorWrap">
-      <pre class="line-numbers" id="lineNumbers">1</pre>
-      <textarea class="editor" id="editor" spellcheck="false" placeholder="Set your manuscript here — html or markdown, 10–50 000 characters. The press waits."></textarea>
-    </div>
-    <div class="preview-wrap" id="previewWrap">
-      <article class="preview-sheet">
-        <div class="folio-mark">Proof · Folio I</div>
-        <h1>An Editorial Proof</h1>
-        <p class="lead">This is the proof sheet — exactly the typeset content that will be pressed to PDF, sandboxed and rendered in a sealed frame.</p>
-        <p>Headlines come out in italic. Paragraphs in old-style serif. Code stays monospaced.</p>
-        <ul>
-          <li>Item the first</li>
-          <li>Item the second</li>
-          <li>Item the third</li>
-        </ul>
-        <p>The preview updates with a quiet 150 ms debounce — nothing flashes; the page only ever <em>settles</em>.</p>
-      </article>
-    </div>
-  </div>
-</main>
+        <footer class="colophon">
+            <div class="caption" id="caption">
+                <span
+                    class="seal"
+                    style="
+                        float: left;
+                        font-size: 28px;
+                        color: var(--ink-dim);
+                        margin-right: 14px;
+                        line-height: 1;
+                    "
+                    >¶</span
+                >
+                <em>The press is idle.</em><span class="leader"></span
+                ><span
+                    style="
+                        font-family: var(--mono);
+                        font-size: 11px;
+                        letter-spacing: 0.18em;
+                        text-transform: uppercase;
+                        color: var(--ink-dim);
+                    "
+                    >awaiting copy</span
+                >
+            </div>
+            <div class="marks">
+                <span class="seal">§</span>
+                <span>Set in Instrument Serif &amp; DM Mono · Printed in browser · MMXXVI</span>
+            </div>
+        </footer>
 
-<footer class="colophon">
-  <div class="caption" id="caption">
-    <span class="seal" style="float:left;font-size:28px;color:var(--ink-dim);margin-right:14px;line-height:1;">¶</span>
-    <em>The press is idle.</em><span class="leader"></span><span style="font-family:var(--mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-dim);">awaiting copy</span>
-  </div>
-  <div class="marks">
-    <span class="seal">§</span>
-    <span>Set in Instrument Serif &amp; DM Mono · Printed in browser · MMXXVI</span>
-  </div>
-</footer>
+        <div class="demo-bar" aria-label="State preview">
+            <span>States ⟶</span>
+            <button data-state="idle" class="on">Idle</button>
+            <button data-state="typing">Typing</button>
+            <button data-state="submitting">Setting</button>
+            <button data-state="polling">Pressing</button>
+            <button data-state="completed">Done</button>
+            <button data-state="failed">Failed</button>
+            <button data-state="rate">Rate-limit</button>
+            <button data-state="error">Network err</button>
+        </div>
 
-<div class="demo-bar" aria-label="State preview">
-  <span>States ⟶</span>
-  <button data-state="idle" class="on">Idle</button>
-  <button data-state="typing">Typing</button>
-  <button data-state="submitting">Setting</button>
-  <button data-state="polling">Pressing</button>
-  <button data-state="completed">Done</button>
-  <button data-state="failed">Failed</button>
-  <button data-state="rate">Rate-limit</button>
-  <button data-state="error">Network err</button>
-</div>
+        <script>
+            // --- date in masthead ---
+            const fmt = new Intl.DateTimeFormat('en-GB', {
+                day: '2-digit',
+                month: 'long',
+                year: 'numeric',
+            })
+            document.getElementById('today').textContent = fmt
+                .format(new Date())
+                .replace(/ /g, ' · ')
 
-<script>
-  // --- date in masthead ---
-  const fmt = new Intl.DateTimeFormat('en-GB', { day: '2-digit', month: 'long', year: 'numeric' });
-  document.getElementById('today').textContent = fmt.format(new Date()).replace(/ /g, ' · ');
+            // --- ink-dot cursor trail ---
+            let lastDot = 0
+            document.addEventListener(
+                'pointermove',
+                (e) => {
+                    const now = performance.now()
+                    if (now - lastDot < 28) return
+                    lastDot = now
+                    const d = document.createElement('div')
+                    d.className = 'ink-dot'
+                    d.style.left = e.clientX + 'px'
+                    d.style.top = e.clientY + 'px'
+                    document.body.appendChild(d)
+                    requestAnimationFrame(() => {
+                        d.style.transform = 'translate(-50%, -50%) scale(0)'
+                        d.style.opacity = '0'
+                    })
+                    setTimeout(() => d.remove(), 700)
+                },
+                {passive: true},
+            )
 
-  // --- ink-dot cursor trail ---
-  let lastDot = 0;
-  document.addEventListener('pointermove', (e) => {
-    const now = performance.now();
-    if (now - lastDot < 28) return;
-    lastDot = now;
-    const d = document.createElement('div');
-    d.className = 'ink-dot';
-    d.style.left = e.clientX + 'px';
-    d.style.top  = e.clientY + 'px';
-    document.body.appendChild(d);
-    requestAnimationFrame(() => {
-      d.style.transform = 'translate(-50%, -50%) scale(0)';
-      d.style.opacity = '0';
-    });
-    setTimeout(() => d.remove(), 700);
-  }, { passive: true });
+            // --- tabs ---
+            const editorWrap = document.getElementById('editorWrap')
+            const previewWrap = document.getElementById('previewWrap')
+            document.querySelectorAll('.tab').forEach((tab) => {
+                tab.addEventListener('click', () => {
+                    document.querySelectorAll('.tab').forEach((t) => t.classList.remove('active'))
+                    tab.classList.add('active')
+                    const which = tab.dataset.tab
+                    editorWrap.style.display = which === 'editor' ? 'grid' : 'none'
+                    previewWrap.classList.toggle('active', which === 'preview')
+                })
+            })
 
-  // --- tabs ---
-  const editorWrap = document.getElementById('editorWrap');
-  const previewWrap = document.getElementById('previewWrap');
-  document.querySelectorAll('.tab').forEach(tab => {
-    tab.addEventListener('click', () => {
-      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-      tab.classList.add('active');
-      const which = tab.dataset.tab;
-      editorWrap.style.display  = which === 'editor'  ? 'grid'  : 'none';
-      previewWrap.classList.toggle('active', which === 'preview');
-    });
-  });
+            // --- editor counter + line numbers + detected type ---
+            const editor = document.getElementById('editor')
+            const charCountEl = document.getElementById('charCount')
+            const lineNumbersEl = document.getElementById('lineNumbers')
+            const detectedTypeEl = document.getElementById('detectedType')
+            const fmtNum = (n) => n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
 
-  // --- editor counter + line numbers + detected type ---
-  const editor = document.getElementById('editor');
-  const charCountEl = document.getElementById('charCount');
-  const lineNumbersEl = document.getElementById('lineNumbers');
-  const detectedTypeEl = document.getElementById('detectedType');
-  const fmtNum = (n) => n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+            const mdIndicators = [
+                /^#{1,6}\s/m,
+                /^\s*[*\-+]\s/m,
+                /^\s*\d+\.\s/m,
+                /\*\*[^*]+\*\*/,
+                /(^|\s)_[^_]+_(\s|$)/,
+                /^\s*>\s/m,
+                /^```/m,
+                /^\s*\|.*\|\s*$/m,
+                /\[[^\]]+\]\([^)]+\)/,
+            ]
+            const detect = (s) => {
+                const t = s.trim()
+                if (t.startsWith('<')) return 'html'
+                if (mdIndicators.some((r) => r.test(t))) return 'markdown'
+                return 'html'
+            }
+            const updateMeta = () => {
+                const v = editor.value
+                const c = v.length
+                const min = 10,
+                    max = 50000
+                const folio = fmtNum(c) + ' / ' + fmtNum(max)
+                charCountEl.innerHTML = `<span class="folio-no${c < min || c > max ? ' warn' : ''}">— · ${folio}</span>`
+                const t = v.length ? detect(v) : 'markdown'
+                detectedTypeEl.textContent = t
+                // line numbers
+                const lines = v.split('\n').length || 1
+                let lns = ''
+                for (let i = 1; i <= Math.max(lines, 12); i++) lns += i + '\n'
+                lineNumbersEl.textContent = lns
+            }
+            editor.addEventListener('input', updateMeta)
+            updateMeta()
 
-  const mdIndicators = [
-    /^#{1,6}\s/m, /^\s*[*\-+]\s/m, /^\s*\d+\.\s/m, /\*\*[^*]+\*\*/,
-    /(^|\s)_[^_]+_(\s|$)/, /^\s*>\s/m, /^```/m, /^\s*\|.*\|\s*$/m, /\[[^\]]+\]\([^)]+\)/
-  ];
-  const detect = (s) => {
-    const t = s.trim();
-    if (t.startsWith('<')) return 'html';
-    if (mdIndicators.some(r => r.test(t))) return 'markdown';
-    return 'html';
-  };
-  const updateMeta = () => {
-    const v = editor.value;
-    const c = v.length;
-    const min = 10, max = 50000;
-    const folio = fmtNum(c) + ' / ' + fmtNum(max);
-    charCountEl.innerHTML = `<span class="folio-no${(c < min || c > max) ? ' warn' : ''}">— · ${folio}</span>`;
-    const t = v.length ? detect(v) : 'markdown';
-    detectedTypeEl.textContent = t;
-    // line numbers
-    const lines = v.split('\n').length || 1;
-    let lns = '';
-    for (let i = 1; i <= Math.max(lines, 12); i++) lns += i + '\n';
-    lineNumbersEl.textContent = lns;
-  };
-  editor.addEventListener('input', updateMeta);
-  updateMeta();
-
-  // --- state caption rendering ---
-  const captionEl = document.getElementById('caption');
-  const submitBtn = document.getElementById('submitBtn');
-  const setCaption = ({ mark, glyph, label, leader, code, tone }) => {
-    captionEl.classList.toggle('error', tone === 'error');
-    captionEl.innerHTML = `
-      <span class="seal" style="float:left;font-size:28px;color:${tone==='error'?'var(--accent)':'var(--ink-dim)'};margin-right:14px;line-height:1;">${glyph}</span>
+            // --- state caption rendering ---
+            const captionEl = document.getElementById('caption')
+            const submitBtn = document.getElementById('submitBtn')
+            const setCaption = ({mark, glyph, label, leader, code, tone}) => {
+                captionEl.classList.toggle('error', tone === 'error')
+                captionEl.innerHTML = `
+      <span class="seal" style="float:left;font-size:28px;color:${tone === 'error' ? 'var(--accent)' : 'var(--ink-dim)'};margin-right:14px;line-height:1;">${glyph}</span>
       <em>${label}</em><span class="leader"></span>
-      <span style="font-family:var(--mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:${tone==='error'?'var(--accent)':'var(--ink-dim)'};">${code}</span>
-    `;
-  };
+      <span style="font-family:var(--mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:${tone === 'error' ? 'var(--accent)' : 'var(--ink-dim)'};">${code}</span>
+    `
+            }
 
-  const states = {
-    idle:       { glyph: '¶', label: 'The press is idle.',                   code: 'awaiting copy' },
-    typing:     { glyph: '¶', label: 'Composing — keys clicking softly.',     code: 'manuscript' },
-    submitting: { glyph: '✎', label: 'Setting type…',                         code: 'enqueueing' },
-    polling:    { glyph: '✎', label: 'On the press — leaves turning.',        code: 'job 87' },
-    completed:  { glyph: '⌑', label: 'Press ready. <a href="#">Take a copy.</a>', code: 'pdf · 32 kb' },
-    failed:     { glyph: '⌧', label: 'The plate refused.',                    code: 'try again', tone: 'error' },
-    rate:       { glyph: '⏲', label: 'Too many proofs — rest the press a moment.', code: 'wait 42 s', tone: 'error' },
-    error:      { glyph: '⌧', label: 'No reply from the typesetters.',        code: 'network', tone: 'error' }
-  };
-  let currentState = 'idle';
-  const setState = (k) => {
-    currentState = k;
-    setCaption(states[k]);
-    submitBtn.disabled = (k === 'submitting' || k === 'polling' || k === 'rate');
-    if (k === 'submitting') submitBtn.innerHTML = `<span class="ink-spinner"></span>Setting…<small>please wait</small>`;
-    else if (k === 'polling') submitBtn.innerHTML = `<span class="ink-spinner"></span>Pressing…<small>job 87</small>`;
-    else if (k === 'rate') submitBtn.innerHTML = `Wait <strong style="font-style:italic;">42</strong>s<small>too many requests</small>`;
-    else if (k === 'completed') submitBtn.innerHTML = `Set &amp; Press<small>another?</small>`;
-    else submitBtn.innerHTML = `Set &amp; Press<small>⌘/Ctrl + ↵</small>`;
-    // sync demo buttons
-    document.querySelectorAll('.demo-bar button').forEach(b => b.classList.toggle('on', b.dataset.state === k));
-  };
+            const states = {
+                idle: {glyph: '¶', label: 'The press is idle.', code: 'awaiting copy'},
+                typing: {
+                    glyph: '¶',
+                    label: 'Composing — keys clicking softly.',
+                    code: 'manuscript',
+                },
+                submitting: {glyph: '✎', label: 'Setting type…', code: 'enqueueing'},
+                polling: {glyph: '✎', label: 'On the press — leaves turning.', code: 'job 87'},
+                completed: {
+                    glyph: '⌑',
+                    label: 'Press ready. <a href="#">Take a copy.</a>',
+                    code: 'pdf · 32 kb',
+                },
+                failed: {glyph: '⌧', label: 'The plate refused.', code: 'try again', tone: 'error'},
+                rate: {
+                    glyph: '⏲',
+                    label: 'Too many proofs — rest the press a moment.',
+                    code: 'wait 42 s',
+                    tone: 'error',
+                },
+                error: {
+                    glyph: '⌧',
+                    label: 'No reply from the typesetters.',
+                    code: 'network',
+                    tone: 'error',
+                },
+            }
+            let currentState = 'idle'
+            const setState = (k) => {
+                currentState = k
+                setCaption(states[k])
+                submitBtn.disabled = k === 'submitting' || k === 'polling' || k === 'rate'
+                if (k === 'submitting')
+                    submitBtn.innerHTML = `<span class="ink-spinner"></span>Setting…<small>please wait</small>`
+                else if (k === 'polling')
+                    submitBtn.innerHTML = `<span class="ink-spinner"></span>Pressing…<small>job 87</small>`
+                else if (k === 'rate')
+                    submitBtn.innerHTML = `Wait <strong style="font-style:italic;">42</strong>s<small>too many requests</small>`
+                else if (k === 'completed')
+                    submitBtn.innerHTML = `Set &amp; Press<small>another?</small>`
+                else submitBtn.innerHTML = `Set &amp; Press<small>⌘/Ctrl + ↵</small>`
+                // sync demo buttons
+                document
+                    .querySelectorAll('.demo-bar button')
+                    .forEach((b) => b.classList.toggle('on', b.dataset.state === k))
+            }
 
-  // --- demo bar ---
-  document.querySelectorAll('.demo-bar button').forEach(b => {
-    b.addEventListener('click', () => setState(b.dataset.state));
-  });
+            // --- demo bar ---
+            document.querySelectorAll('.demo-bar button').forEach((b) => {
+                b.addEventListener('click', () => setState(b.dataset.state))
+            })
 
-  // --- simulate the real submit cycle on button click ---
-  let cycleTimers = [];
-  const clearCycle = () => { cycleTimers.forEach(clearTimeout); cycleTimers = []; };
-  submitBtn.addEventListener('click', () => {
-    if (submitBtn.disabled) return;
-    clearCycle();
-    setState('submitting');
-    cycleTimers.push(setTimeout(() => setState('polling'), 700));
-    cycleTimers.push(setTimeout(() => setState('completed'), 2700));
-  });
-  // keyboard shortcut
-  document.addEventListener('keydown', (e) => {
-    if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
-      e.preventDefault();
-      submitBtn.click();
-    }
-  });
+            // --- simulate the real submit cycle on button click ---
+            let cycleTimers = []
+            const clearCycle = () => {
+                cycleTimers.forEach(clearTimeout)
+                cycleTimers = []
+            }
+            submitBtn.addEventListener('click', () => {
+                if (submitBtn.disabled) return
+                clearCycle()
+                setState('submitting')
+                cycleTimers.push(setTimeout(() => setState('polling'), 700))
+                cycleTimers.push(setTimeout(() => setState('completed'), 2700))
+            })
+            // keyboard shortcut
+            document.addEventListener('keydown', (e) => {
+                if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
+                    e.preventDefault()
+                    submitBtn.click()
+                }
+            })
 
-  // soft typing-state feedback while user types
-  let typingTimer;
-  editor.addEventListener('input', () => {
-    if (currentState !== 'idle' && currentState !== 'typing' && currentState !== 'completed') return;
-    setState('typing');
-    clearTimeout(typingTimer);
-    typingTimer = setTimeout(() => {
-      if (currentState === 'typing') setState('idle');
-    }, 900);
-  });
+            // soft typing-state feedback while user types
+            let typingTimer
+            editor.addEventListener('input', () => {
+                if (
+                    currentState !== 'idle' &&
+                    currentState !== 'typing' &&
+                    currentState !== 'completed'
+                )
+                    return
+                setState('typing')
+                clearTimeout(typingTimer)
+                typingTimer = setTimeout(() => {
+                    if (currentState === 'typing') setState('idle')
+                }, 900)
+            })
 
-  // start clean
-  setState('idle');
-</script>
-</body>
+            // start clean
+            setState('idle')
+        </script>
+    </body>
 </html>
