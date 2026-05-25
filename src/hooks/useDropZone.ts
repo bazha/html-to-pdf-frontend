@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type DragEvent } from 'react';
+import { useCallback, useEffect, useRef, useState, type DragEvent } from 'react';
 
 interface Bind {
   onDragEnter: (e: DragEvent) => void;
@@ -16,10 +16,10 @@ export const useDropZone = (onFile: (file: File) => void): UseDropZone => {
   const [isDragOver, setIsDragOver] = useState(false);
   const depth = useRef(0);
 
-  const reset = () => {
+  const reset = useCallback(() => {
     depth.current = 0;
     setIsDragOver(false);
-  };
+  }, []);
 
   // Window-level safety net. `dragend` only fires for in-page drag sources,
   // so it does NOT cover the common case of dragging a file in from Finder
@@ -36,7 +36,7 @@ export const useDropZone = (onFile: (file: File) => void): UseDropZone => {
       window.removeEventListener('dragleave', onWindowDragLeave);
       window.removeEventListener('drop', reset);
     };
-  }, []);
+  }, [reset]);
 
   const bind: Bind = {
     onDragEnter: (e) => {
