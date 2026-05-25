@@ -2,6 +2,7 @@ import {useCallback, useEffect, useRef, useState} from 'react'
 import {ApiError, submitContent, type SubmitResult} from '../api/pdfClient'
 import {type PdfOptions} from '../types/pdfOptions'
 import {toRequestOptions} from '../api/optionsMapper'
+import {transformPageBreaks} from '../utils/pageBreaks'
 
 export type SubmitState =
     | {phase: 'idle'}
@@ -32,7 +33,7 @@ export const useSubmit = (): UseSubmit => {
                 timeoutRef.current = null
             }
             setState({phase: 'submitting'})
-            submitContent(content, undefined, toRequestOptions(options))
+            submitContent(transformPageBreaks(content), undefined, toRequestOptions(options))
                 .then((res) => {
                     setState({phase: 'idle'})
                     onSuccess(res)
