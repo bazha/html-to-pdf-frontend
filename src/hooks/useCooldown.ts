@@ -14,14 +14,15 @@ export const useCooldown = (state: SubmitState): number | null => {
     setSeconds(state.phase === 'rate_limited' ? state.retryAfter : null);
   }
 
+  const until = state.phase === 'rate_limited' ? state.until : null;
+
   useEffect(() => {
-    if (state.phase !== 'rate_limited') return;
-    const until = state.until;
+    if (until === null) return;
     const id = window.setInterval(() => {
       setSeconds(Math.max(0, Math.ceil((until - Date.now()) / 1000)));
     }, 250);
     return () => window.clearInterval(id);
-  }, [state]);
+  }, [state.phase, until]);
 
   return seconds;
 };
