@@ -68,4 +68,21 @@ describe('useDropZone', () => {
     );
     expect(onFile).not.toHaveBeenCalled();
   });
+
+  it('keeps bind reference stable across re-renders with the same onFile', () => {
+    const onFile = vi.fn();
+    const { result, rerender } = renderHook(() => useDropZone(onFile));
+    const firstBind = result.current.bind;
+    rerender();
+    expect(result.current.bind).toBe(firstBind);
+  });
+
+  it('returns a new bind reference when onFile identity changes', () => {
+    const { result, rerender } = renderHook(({ onFile }) => useDropZone(onFile), {
+      initialProps: { onFile: vi.fn() },
+    });
+    const firstBind = result.current.bind;
+    rerender({ onFile: vi.fn() });
+    expect(result.current.bind).not.toBe(firstBind);
+  });
 });
