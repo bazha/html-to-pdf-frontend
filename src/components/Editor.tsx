@@ -1,13 +1,12 @@
 import {useCallback, useEffect, useRef} from 'react'
 import {EditorToolbar} from './EditorToolbar'
+import {PAGE_BREAK_LITERAL} from '../utils/pageBreaks'
 
 interface Props {
     value: string
     onChange: (next: string) => void
     onSubmitShortcut: () => void
 }
-
-const PAGE_BREAK_LITERAL = '<!-- page-break -->'
 
 export const Editor = ({value, onChange, onSubmitShortcut}: Props) => {
     const ref = useRef<HTMLTextAreaElement>(null)

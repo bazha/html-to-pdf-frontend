@@ -1,3 +1,5 @@
+export const PAGE_BREAK_LITERAL = '<!-- page-break -->'
+
 const PAGE_BREAK_DIV =
     '<div class="pdf-page-break" style="break-before: page; page-break-before: always;"></div>'
 
