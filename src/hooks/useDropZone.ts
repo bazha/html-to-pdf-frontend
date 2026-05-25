@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState, type DragEvent } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState, type DragEvent } from 'react';
 
 interface Bind {
   onDragEnter: (e: DragEvent) => void;
@@ -38,27 +38,30 @@ export const useDropZone = (onFile: (file: File) => void): UseDropZone => {
     };
   }, [reset]);
 
-  const bind: Bind = {
-    onDragEnter: (e) => {
-      e.preventDefault();
-      depth.current += 1;
-      setIsDragOver(true);
-    },
-    onDragOver: (e) => {
-      e.preventDefault();
-      e.dataTransfer.dropEffect = 'copy';
-    },
-    onDragLeave: () => {
-      depth.current = Math.max(0, depth.current - 1);
-      if (depth.current === 0) setIsDragOver(false);
-    },
-    onDrop: (e) => {
-      e.preventDefault();
-      reset();
-      const file = e.dataTransfer.files?.[0];
-      if (file) void onFile(file);
-    },
-  };
+  const bind = useMemo<Bind>(
+    () => ({
+      onDragEnter: (e) => {
+        e.preventDefault();
+        depth.current += 1;
+        setIsDragOver(true);
+      },
+      onDragOver: (e) => {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = 'copy';
+      },
+      onDragLeave: () => {
+        depth.current = Math.max(0, depth.current - 1);
+        if (depth.current === 0) setIsDragOver(false);
+      },
+      onDrop: (e) => {
+        e.preventDefault();
+        reset();
+        const file = e.dataTransfer.files?.[0];
+        if (file) void onFile(file);
+      },
+    }),
+    [onFile, reset],
+  );
 
   return { isDragOver, bind };
 };
