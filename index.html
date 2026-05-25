@@ -1,35 +1,37 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="color-scheme" content="light dark" />
-    <meta name="theme-color" content="#0a0b0e" media="(prefers-color-scheme: dark)" />
-    <meta name="theme-color" content="#f7f8fa" media="(prefers-color-scheme: light)" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Mona+Sans:ital,wdth,wght@0,75..125,200..900;1,75..125,200..900&family=Fragment+Mono:ital@0;1&display=swap"
-      rel="stylesheet"
-    />
-    <title>Press — html &amp; markdown → pdf</title>
-    <script>
-      // Apply persisted theme before paint to avoid a flash. Kept inline
-      // and intentionally tiny; the React component is the source of truth
-      // once it mounts.
-      (function () {
-        try {
-          var t = localStorage.getItem('press.theme');
-          if (t === 'light' || t === 'dark') {
-            document.documentElement.setAttribute('data-theme', t);
-          }
-        } catch (e) { /* storage unavailable; fall back to OS preference */ }
-      })();
-    </script>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+    <head>
+        <meta charset="UTF-8" />
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="color-scheme" content="light dark" />
+        <meta name="theme-color" content="#0a0b0e" media="(prefers-color-scheme: dark)" />
+        <meta name="theme-color" content="#f7f8fa" media="(prefers-color-scheme: light)" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Mona+Sans:ital,wdth,wght@0,75..125,200..900;1,75..125,200..900&family=Fragment+Mono:ital@0;1&display=swap"
+            rel="stylesheet"
+        />
+        <title>Press — html &amp; markdown → pdf</title>
+        <script>
+            // Apply persisted theme before paint to avoid a flash. Kept inline
+            // and intentionally tiny; the React component is the source of truth
+            // once it mounts.
+            ;(function () {
+                try {
+                    var t = localStorage.getItem('press.theme')
+                    if (t === 'light' || t === 'dark') {
+                        document.documentElement.setAttribute('data-theme', t)
+                    }
+                } catch (e) {
+                    /* storage unavailable; fall back to OS preference */
+                }
+            })()
+        </script>
+    </head>
+    <body>
+        <div id="root"></div>
+        <script type="module" src="/src/main.tsx"></script>
+    </body>
 </html>

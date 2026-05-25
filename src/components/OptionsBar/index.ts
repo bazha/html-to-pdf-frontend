@@ -1,1 +1,1 @@
-export { OptionsBar } from './OptionsBar';
+export {OptionsBar} from './OptionsBar'

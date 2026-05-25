@@ -1,13 +1,13 @@
-import { useEffect, useState } from 'react';
-import { renderMarkdownToHtml, sanitizeHtml } from '../utils/renderMarkdown';
-import type { ContentType } from '../utils/detectType';
+import {useEffect, useState} from 'react'
+import {renderMarkdownToHtml, sanitizeHtml} from '../utils/renderMarkdown'
+import type {ContentType} from '../utils/detectType'
 
 interface Props {
-  content: string;
-  detectedType: ContentType;
+    content: string
+    detectedType: ContentType
 }
 
-const DEBOUNCE_MS = 150;
+const DEBOUNCE_MS = 150
 
 // The iframe uses sandbox="" (no allow-same-origin / allow-scripts), so it
 // has an opaque origin and cannot inherit the parent's font cache. Importing
@@ -82,27 +82,19 @@ const PREVIEW_STYLES = `
   table { border-collapse: collapse; margin: 14px 0; font-size: 14px; width: 100%; }
   th, td { padding: 8px 12px; border-bottom: 1px solid #e7eaf0; text-align: left; }
   th { font-variation-settings: 'wdth' 100, 'wght' 620; font-weight: normal; color: #0a0b0e; }
-`;
+`
 
-export const Preview = ({ content, detectedType }: Props) => {
-  const [srcDoc, setSrcDoc] = useState('');
-  useEffect(() => {
-    const handle = window.setTimeout(() => {
-      const body = detectedType === 'markdown'
-        ? renderMarkdownToHtml(content)
-        : sanitizeHtml(content);
-      setSrcDoc(
-        `<!doctype html><html><head><meta charset="utf-8"><style>${PREVIEW_STYLES}</style></head><body>${body}</body></html>`,
-      );
-    }, DEBOUNCE_MS);
-    return () => window.clearTimeout(handle);
-  }, [content, detectedType]);
-  return (
-    <iframe
-      title="preview"
-      className="preview-frame"
-      sandbox=""
-      srcDoc={srcDoc}
-    />
-  );
-};
+export const Preview = ({content, detectedType}: Props) => {
+    const [srcDoc, setSrcDoc] = useState('')
+    useEffect(() => {
+        const handle = window.setTimeout(() => {
+            const body =
+                detectedType === 'markdown' ? renderMarkdownToHtml(content) : sanitizeHtml(content)
+            setSrcDoc(
+                `<!doctype html><html><head><meta charset="utf-8"><style>${PREVIEW_STYLES}</style></head><body>${body}</body></html>`,
+            )
+        }, DEBOUNCE_MS)
+        return () => window.clearTimeout(handle)
+    }, [content, detectedType])
+    return <iframe title="preview" className="preview-frame" sandbox="" srcDoc={srcDoc} />
+}

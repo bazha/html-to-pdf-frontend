@@ -1,1041 +1,1375 @@
 <!doctype html>
 <html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>PLATE — PT-PDF-001 · REV A</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Major+Mono+Display&family=Geist+Mono:wght@300;400;500;600&family=Doto:wght@500;800&display=swap" rel="stylesheet">
-<style>
-  :root {
-    --paper:        #e7eef3;
-    --paper-2:      #d7e1ea;
-    --paper-grid-1: #b9c8d4;   /* major grid */
-    --paper-grid-2: #d0d9e1;   /* minor grid */
-    --ink:          #0d3a5c;   /* blueprint */
-    --ink-2:        #2a567b;
-    --ink-dim:      #6b88a0;
-    --ink-faint:    #98aebf;
-    --orange:       #e85d22;
-    --orange-2:     #c44a16;
-    --green:        #1f7a3e;
-    --green-2:      #2bb360;
-    --amber:        #d6961f;
-    --amber-2:      #ffc24a;
-    --red:          #b51b1b;
-    --metal:        #1a2730;
-    --metal-2:      #0f1a23;
-    --display:      'Major Mono Display', 'IBM Plex Mono', monospace;
-    --mono:         'Geist Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
-    --dot:          'Doto', monospace;
-  }
-  * { box-sizing: border-box; }
-  html, body { margin: 0; height: 100%; overflow-x: hidden; }
-  body {
-    font-family: var(--mono);
-    font-size: 12px;
-    color: var(--ink);
-    /* engineering grid: 5mm major + 1mm minor */
-    background:
-      linear-gradient(to right,  transparent 0, transparent 49.5px, var(--paper-grid-1) 49.5px, var(--paper-grid-1) 50px, transparent 50px) 0 0 / 50px 50px,
-      linear-gradient(to bottom, transparent 0, transparent 49.5px, var(--paper-grid-1) 49.5px, var(--paper-grid-1) 50px, transparent 50px) 0 0 / 50px 50px,
-      linear-gradient(to right,  transparent 0, transparent  9.5px, var(--paper-grid-2)  9.5px, var(--paper-grid-2) 10px, transparent 10px) 0 0 / 10px 10px,
-      linear-gradient(to bottom, transparent 0, transparent  9.5px, var(--paper-grid-2)  9.5px, var(--paper-grid-2) 10px, transparent 10px) 0 0 / 10px 10px,
-      var(--paper);
-    line-height: 1.5;
-    cursor: crosshair;
-    position: relative;
-  }
-  body::before {
-    /* soft vignette */
-    content: "";
-    position: fixed; inset: 0;
-    pointer-events: none;
-    background: radial-gradient(at 50% 30%, transparent 50%, rgba(13,58,92,.18) 100%);
-    z-index: 1;
-  }
-  ::selection { background: var(--ink); color: var(--paper); }
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>PLATE — PT-PDF-001 · REV A</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Major+Mono+Display&family=Geist+Mono:wght@300;400;500;600&family=Doto:wght@500;800&display=swap"
+            rel="stylesheet"
+        />
+        <style>
+            :root {
+                --paper: #e7eef3;
+                --paper-2: #d7e1ea;
+                --paper-grid-1: #b9c8d4; /* major grid */
+                --paper-grid-2: #d0d9e1; /* minor grid */
+                --ink: #0d3a5c; /* blueprint */
+                --ink-2: #2a567b;
+                --ink-dim: #6b88a0;
+                --ink-faint: #98aebf;
+                --orange: #e85d22;
+                --orange-2: #c44a16;
+                --green: #1f7a3e;
+                --green-2: #2bb360;
+                --amber: #d6961f;
+                --amber-2: #ffc24a;
+                --red: #b51b1b;
+                --metal: #1a2730;
+                --metal-2: #0f1a23;
+                --display: 'Major Mono Display', 'IBM Plex Mono', monospace;
+                --mono: 'Geist Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+                --dot: 'Doto', monospace;
+            }
+            * {
+                box-sizing: border-box;
+            }
+            html,
+            body {
+                margin: 0;
+                height: 100%;
+                overflow-x: hidden;
+            }
+            body {
+                font-family: var(--mono);
+                font-size: 12px;
+                color: var(--ink);
+                /* engineering grid: 5mm major + 1mm minor */
+                background:
+                    linear-gradient(
+                            to right,
+                            transparent 0,
+                            transparent 49.5px,
+                            var(--paper-grid-1) 49.5px,
+                            var(--paper-grid-1) 50px,
+                            transparent 50px
+                        )
+                        0 0 / 50px 50px,
+                    linear-gradient(
+                            to bottom,
+                            transparent 0,
+                            transparent 49.5px,
+                            var(--paper-grid-1) 49.5px,
+                            var(--paper-grid-1) 50px,
+                            transparent 50px
+                        )
+                        0 0 / 50px 50px,
+                    linear-gradient(
+                            to right,
+                            transparent 0,
+                            transparent 9.5px,
+                            var(--paper-grid-2) 9.5px,
+                            var(--paper-grid-2) 10px,
+                            transparent 10px
+                        )
+                        0 0 / 10px 10px,
+                    linear-gradient(
+                            to bottom,
+                            transparent 0,
+                            transparent 9.5px,
+                            var(--paper-grid-2) 9.5px,
+                            var(--paper-grid-2) 10px,
+                            transparent 10px
+                        )
+                        0 0 / 10px 10px,
+                    var(--paper);
+                line-height: 1.5;
+                cursor: crosshair;
+                position: relative;
+            }
+            body::before {
+                /* soft vignette */
+                content: '';
+                position: fixed;
+                inset: 0;
+                pointer-events: none;
+                background: radial-gradient(
+                    at 50% 30%,
+                    transparent 50%,
+                    rgba(13, 58, 92, 0.18) 100%
+                );
+                z-index: 1;
+            }
+            ::selection {
+                background: var(--ink);
+                color: var(--paper);
+            }
 
-  /* === Top status strip === */
-  .strip {
-    background: var(--metal);
-    color: #cfd6dd;
-    border-bottom: 1px solid var(--metal-2);
-    padding: 7px 18px;
-    display: grid;
-    grid-template-columns: repeat(6, auto) 1fr auto;
-    align-items: center;
-    gap: 22px;
-    font-family: var(--mono);
-    font-size: 11px;
-    letter-spacing: .04em;
-    position: relative;
-    z-index: 5;
-  }
-  .strip .label { color: #7e8b95; text-transform: uppercase; letter-spacing: .18em; font-size: 9.5px; }
-  .strip .value { color: #fff; font-weight: 500; }
-  .strip .led {
-    display: inline-block;
-    width: 8px; height: 8px;
-    border-radius: 50%;
-    margin-right: 6px;
-    vertical-align: 0;
-    box-shadow: 0 0 0 1px rgba(0,0,0,.35), 0 0 6px currentColor;
-  }
-  .strip .led.green  { background: var(--green-2); color: var(--green-2); animation: blink 1.4s ease-in-out infinite; }
-  .strip .led.amber  { background: var(--amber-2); color: var(--amber-2); }
-  .strip .led.red    { background: #ff6363; color: #ff6363; }
-  @keyframes blink { 50% { opacity: .35; } }
-  .strip .ticker {
-    overflow: hidden;
-    white-space: nowrap;
-    color: var(--amber-2);
-    font-size: 10px;
-    letter-spacing: .12em;
-  }
-  .strip .ticker span {
-    display: inline-block;
-    animation: marquee 22s linear infinite;
-    padding-left: 100%;
-  }
-  @keyframes marquee {
-    from { transform: translateX(0); }
-    to   { transform: translateX(-100%); }
-  }
+            /* === Top status strip === */
+            .strip {
+                background: var(--metal);
+                color: #cfd6dd;
+                border-bottom: 1px solid var(--metal-2);
+                padding: 7px 18px;
+                display: grid;
+                grid-template-columns: repeat(6, auto) 1fr auto;
+                align-items: center;
+                gap: 22px;
+                font-family: var(--mono);
+                font-size: 11px;
+                letter-spacing: 0.04em;
+                position: relative;
+                z-index: 5;
+            }
+            .strip .label {
+                color: #7e8b95;
+                text-transform: uppercase;
+                letter-spacing: 0.18em;
+                font-size: 9.5px;
+            }
+            .strip .value {
+                color: #fff;
+                font-weight: 500;
+            }
+            .strip .led {
+                display: inline-block;
+                width: 8px;
+                height: 8px;
+                border-radius: 50%;
+                margin-right: 6px;
+                vertical-align: 0;
+                box-shadow:
+                    0 0 0 1px rgba(0, 0, 0, 0.35),
+                    0 0 6px currentColor;
+            }
+            .strip .led.green {
+                background: var(--green-2);
+                color: var(--green-2);
+                animation: blink 1.4s ease-in-out infinite;
+            }
+            .strip .led.amber {
+                background: var(--amber-2);
+                color: var(--amber-2);
+            }
+            .strip .led.red {
+                background: #ff6363;
+                color: #ff6363;
+            }
+            @keyframes blink {
+                50% {
+                    opacity: 0.35;
+                }
+            }
+            .strip .ticker {
+                overflow: hidden;
+                white-space: nowrap;
+                color: var(--amber-2);
+                font-size: 10px;
+                letter-spacing: 0.12em;
+            }
+            .strip .ticker span {
+                display: inline-block;
+                animation: marquee 22s linear infinite;
+                padding-left: 100%;
+            }
+            @keyframes marquee {
+                from {
+                    transform: translateX(0);
+                }
+                to {
+                    transform: translateX(-100%);
+                }
+            }
 
-  /* === Page frame === */
-  .sheet {
-    position: relative;
-    z-index: 2;
-    padding: 20px;
-    min-height: calc(100vh - 32px);
-  }
-  /* sheet border with corner ticks */
-  .frame {
-    position: relative;
-    border: 2px solid var(--ink);
-    padding: 22px 26px 26px;
-    background:
-      linear-gradient(135deg, transparent 49.6%, var(--paper-grid-1) 49.6%, var(--paper-grid-1) 50.4%, transparent 50.4%) 0 0/8px 8px,
-      var(--paper);
-    background-blend-mode: multiply;
-  }
-  .frame::before, .frame::after,
-  .frame > .tick-tr, .frame > .tick-br {
-    content: "";
-    position: absolute;
-    width: 24px; height: 24px;
-    border: 2px solid var(--ink);
-  }
-  .frame::before { top: -8px; left: -8px; border-right: 0; border-bottom: 0; }
-  .frame::after  { top: -8px; right: -8px; border-left: 0; border-bottom: 0; }
-  .frame > .tick-tr { bottom: -8px; left: -8px; border-right: 0; border-top: 0; }
-  .frame > .tick-br { bottom: -8px; right: -8px; border-left: 0; border-top: 0; }
+            /* === Page frame === */
+            .sheet {
+                position: relative;
+                z-index: 2;
+                padding: 20px;
+                min-height: calc(100vh - 32px);
+            }
+            /* sheet border with corner ticks */
+            .frame {
+                position: relative;
+                border: 2px solid var(--ink);
+                padding: 22px 26px 26px;
+                background:
+                    linear-gradient(
+                            135deg,
+                            transparent 49.6%,
+                            var(--paper-grid-1) 49.6%,
+                            var(--paper-grid-1) 50.4%,
+                            transparent 50.4%
+                        )
+                        0 0/8px 8px,
+                    var(--paper);
+                background-blend-mode: multiply;
+            }
+            .frame::before,
+            .frame::after,
+            .frame > .tick-tr,
+            .frame > .tick-br {
+                content: '';
+                position: absolute;
+                width: 24px;
+                height: 24px;
+                border: 2px solid var(--ink);
+            }
+            .frame::before {
+                top: -8px;
+                left: -8px;
+                border-right: 0;
+                border-bottom: 0;
+            }
+            .frame::after {
+                top: -8px;
+                right: -8px;
+                border-left: 0;
+                border-bottom: 0;
+            }
+            .frame > .tick-tr {
+                bottom: -8px;
+                left: -8px;
+                border-right: 0;
+                border-top: 0;
+            }
+            .frame > .tick-br {
+                bottom: -8px;
+                right: -8px;
+                border-left: 0;
+                border-top: 0;
+            }
 
-  /* === Title block (top of frame) === */
-  .titleblock {
-    display: grid;
-    grid-template-columns: auto 1fr auto;
-    align-items: end;
-    gap: 24px;
-    padding-bottom: 18px;
-    border-bottom: 2px solid var(--ink);
-  }
-  .titleblock .mark {
-    font-family: var(--display);
-    font-size: 68px;
-    line-height: .85;
-    color: var(--ink);
-    letter-spacing: .02em;
-    position: relative;
-  }
-  .titleblock .mark sup {
-    font-family: var(--mono);
-    font-size: 10px;
-    letter-spacing: .2em;
-    color: var(--orange);
-    vertical-align: 40px;
-    margin-left: 8px;
-  }
-  .titleblock .desc {
-    font-family: var(--mono);
-    font-size: 12px;
-    color: var(--ink-2);
-    letter-spacing: .04em;
-    align-self: end;
-    line-height: 1.45;
-  }
-  .titleblock .desc .arrow { color: var(--orange); }
-  .titleblock .desc .h { color: var(--ink); text-transform: uppercase; letter-spacing: .14em; font-size: 11px; display: block; margin-bottom: 6px; }
-  .titleblock .stamp {
-    display: grid;
-    grid-template-columns: auto auto;
-    gap: 4px 14px;
-    font-family: var(--mono);
-    font-size: 10px;
-    text-transform: uppercase;
-    letter-spacing: .18em;
-    color: var(--ink);
-    border: 1.5px solid var(--ink);
-    padding: 10px 14px;
-    align-self: end;
-    background: var(--paper);
-    transform: rotate(-1.2deg);
-    box-shadow: 3px 3px 0 0 rgba(13,58,92,.16);
-  }
-  .titleblock .stamp b { color: var(--orange); font-weight: 600; }
+            /* === Title block (top of frame) === */
+            .titleblock {
+                display: grid;
+                grid-template-columns: auto 1fr auto;
+                align-items: end;
+                gap: 24px;
+                padding-bottom: 18px;
+                border-bottom: 2px solid var(--ink);
+            }
+            .titleblock .mark {
+                font-family: var(--display);
+                font-size: 68px;
+                line-height: 0.85;
+                color: var(--ink);
+                letter-spacing: 0.02em;
+                position: relative;
+            }
+            .titleblock .mark sup {
+                font-family: var(--mono);
+                font-size: 10px;
+                letter-spacing: 0.2em;
+                color: var(--orange);
+                vertical-align: 40px;
+                margin-left: 8px;
+            }
+            .titleblock .desc {
+                font-family: var(--mono);
+                font-size: 12px;
+                color: var(--ink-2);
+                letter-spacing: 0.04em;
+                align-self: end;
+                line-height: 1.45;
+            }
+            .titleblock .desc .arrow {
+                color: var(--orange);
+            }
+            .titleblock .desc .h {
+                color: var(--ink);
+                text-transform: uppercase;
+                letter-spacing: 0.14em;
+                font-size: 11px;
+                display: block;
+                margin-bottom: 6px;
+            }
+            .titleblock .stamp {
+                display: grid;
+                grid-template-columns: auto auto;
+                gap: 4px 14px;
+                font-family: var(--mono);
+                font-size: 10px;
+                text-transform: uppercase;
+                letter-spacing: 0.18em;
+                color: var(--ink);
+                border: 1.5px solid var(--ink);
+                padding: 10px 14px;
+                align-self: end;
+                background: var(--paper);
+                transform: rotate(-1.2deg);
+                box-shadow: 3px 3px 0 0 rgba(13, 58, 92, 0.16);
+            }
+            .titleblock .stamp b {
+                color: var(--orange);
+                font-weight: 600;
+            }
 
-  /* === Body layout === */
-  .body {
-    display: grid;
-    grid-template-columns: 1fr 320px;
-    gap: 22px;
-    padding-top: 22px;
-  }
+            /* === Body layout === */
+            .body {
+                display: grid;
+                grid-template-columns: 1fr 320px;
+                gap: 22px;
+                padding-top: 22px;
+            }
 
-  /* === Tabs (toggle switches) === */
-  .switches {
-    display: flex;
-    align-items: center;
-    gap: 18px;
-    padding-bottom: 14px;
-  }
-  .switch {
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    cursor: pointer;
-    user-select: none;
-  }
-  .switch .body {
-    width: 56px; height: 22px;
-    background: var(--paper-2);
-    border: 1.5px solid var(--ink);
-    border-radius: 2px;
-    position: relative;
-    overflow: hidden;
-  }
-  .switch .body::before {
-    content: "";
-    position: absolute;
-    top: 1.5px; bottom: 1.5px;
-    left: 1.5px;
-    width: 18px;
-    background: var(--ink);
-    transition: transform 220ms cubic-bezier(.4,1.5,.4,1);
-  }
-  .switch.on .body::before { transform: translateX(30px); }
-  .switch.on .body { background: var(--green); border-color: var(--green); }
-  .switch .name {
-    font-family: var(--display);
-    font-size: 14px;
-    letter-spacing: .04em;
-  }
-  .switch .name small {
-    font-family: var(--mono);
-    font-size: 9.5px;
-    color: var(--ink-dim);
-    letter-spacing: .22em;
-    margin-left: 8px;
-    text-transform: uppercase;
-  }
+            /* === Tabs (toggle switches) === */
+            .switches {
+                display: flex;
+                align-items: center;
+                gap: 18px;
+                padding-bottom: 14px;
+            }
+            .switch {
+                display: inline-flex;
+                align-items: center;
+                gap: 10px;
+                cursor: pointer;
+                user-select: none;
+            }
+            .switch .body {
+                width: 56px;
+                height: 22px;
+                background: var(--paper-2);
+                border: 1.5px solid var(--ink);
+                border-radius: 2px;
+                position: relative;
+                overflow: hidden;
+            }
+            .switch .body::before {
+                content: '';
+                position: absolute;
+                top: 1.5px;
+                bottom: 1.5px;
+                left: 1.5px;
+                width: 18px;
+                background: var(--ink);
+                transition: transform 220ms cubic-bezier(0.4, 1.5, 0.4, 1);
+            }
+            .switch.on .body::before {
+                transform: translateX(30px);
+            }
+            .switch.on .body {
+                background: var(--green);
+                border-color: var(--green);
+            }
+            .switch .name {
+                font-family: var(--display);
+                font-size: 14px;
+                letter-spacing: 0.04em;
+            }
+            .switch .name small {
+                font-family: var(--mono);
+                font-size: 9.5px;
+                color: var(--ink-dim);
+                letter-spacing: 0.22em;
+                margin-left: 8px;
+                text-transform: uppercase;
+            }
 
-  /* === Editor card === */
-  .card {
-    background: var(--paper);
-    border: 1.5px solid var(--ink);
-    position: relative;
-    box-shadow: 6px 6px 0 0 rgba(13,58,92,.08);
-  }
-  .card .cardhead {
-    background: var(--ink);
-    color: var(--paper);
-    padding: 6px 12px;
-    font-family: var(--display);
-    font-size: 11px;
-    letter-spacing: .12em;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-  .card .cardhead .badge {
-    font-family: var(--mono);
-    font-size: 9.5px;
-    letter-spacing: .2em;
-    text-transform: uppercase;
-    color: var(--amber-2);
-  }
-  .card .body-wrap {
-    position: relative;
-    padding: 8px 0;
-  }
+            /* === Editor card === */
+            .card {
+                background: var(--paper);
+                border: 1.5px solid var(--ink);
+                position: relative;
+                box-shadow: 6px 6px 0 0 rgba(13, 58, 92, 0.08);
+            }
+            .card .cardhead {
+                background: var(--ink);
+                color: var(--paper);
+                padding: 6px 12px;
+                font-family: var(--display);
+                font-size: 11px;
+                letter-spacing: 0.12em;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+            }
+            .card .cardhead .badge {
+                font-family: var(--mono);
+                font-size: 9.5px;
+                letter-spacing: 0.2em;
+                text-transform: uppercase;
+                color: var(--amber-2);
+            }
+            .card .body-wrap {
+                position: relative;
+                padding: 8px 0;
+            }
 
-  .editor {
-    width: 100%;
-    border: 0;
-    outline: 0;
-    background: transparent;
-    color: var(--ink);
-    padding: 14px 18px 36px 56px;
-    font-family: var(--mono);
-    font-size: 13px;
-    line-height: 1.7;
-    resize: none;
-    height: 440px;
-    letter-spacing: -.005em;
-  }
-  .editor::placeholder { color: var(--ink-faint); }
-  .gutter {
-    position: absolute;
-    top: 0; left: 0; bottom: 0;
-    width: 44px;
-    border-right: 1px dashed var(--paper-grid-1);
-    padding: 14px 6px;
-    text-align: right;
-    color: var(--ink-faint);
-    font-family: var(--mono);
-    font-size: 11px;
-    line-height: 1.7;
-    user-select: none;
-  }
+            .editor {
+                width: 100%;
+                border: 0;
+                outline: 0;
+                background: transparent;
+                color: var(--ink);
+                padding: 14px 18px 36px 56px;
+                font-family: var(--mono);
+                font-size: 13px;
+                line-height: 1.7;
+                resize: none;
+                height: 440px;
+                letter-spacing: -0.005em;
+            }
+            .editor::placeholder {
+                color: var(--ink-faint);
+            }
+            .gutter {
+                position: absolute;
+                top: 0;
+                left: 0;
+                bottom: 0;
+                width: 44px;
+                border-right: 1px dashed var(--paper-grid-1);
+                padding: 14px 6px;
+                text-align: right;
+                color: var(--ink-faint);
+                font-family: var(--mono);
+                font-size: 11px;
+                line-height: 1.7;
+                user-select: none;
+            }
 
-  /* dimension line under editor */
-  .dimline {
-    position: relative;
-    margin: 4px 18px 8px 56px;
-    height: 28px;
-    color: var(--orange);
-    font-family: var(--mono);
-    font-size: 10px;
-    letter-spacing: .18em;
-    text-transform: uppercase;
-    text-align: center;
-  }
-  .dimline .line {
-    position: absolute;
-    top: 10px; left: 0; right: 0; height: 1px;
-    background: var(--orange);
-    transform-origin: left center;
-    animation: drawx 700ms cubic-bezier(.2,.7,.2,1) 240ms both;
-  }
-  .dimline .line::before, .dimline .line::after {
-    content: ""; position: absolute; top: -4px; width: 1px; height: 9px; background: var(--orange);
-  }
-  .dimline .line::before { left: 0; }
-  .dimline .line::after  { right: 0; }
-  .dimline .label {
-    position: absolute;
-    top: 14px; left: 50%; transform: translateX(-50%);
-    background: var(--paper);
-    padding: 0 8px;
-  }
-  @keyframes drawx {
-    from { transform: scaleX(0); }
-    to   { transform: scaleX(1); }
-  }
+            /* dimension line under editor */
+            .dimline {
+                position: relative;
+                margin: 4px 18px 8px 56px;
+                height: 28px;
+                color: var(--orange);
+                font-family: var(--mono);
+                font-size: 10px;
+                letter-spacing: 0.18em;
+                text-transform: uppercase;
+                text-align: center;
+            }
+            .dimline .line {
+                position: absolute;
+                top: 10px;
+                left: 0;
+                right: 0;
+                height: 1px;
+                background: var(--orange);
+                transform-origin: left center;
+                animation: drawx 700ms cubic-bezier(0.2, 0.7, 0.2, 1) 240ms both;
+            }
+            .dimline .line::before,
+            .dimline .line::after {
+                content: '';
+                position: absolute;
+                top: -4px;
+                width: 1px;
+                height: 9px;
+                background: var(--orange);
+            }
+            .dimline .line::before {
+                left: 0;
+            }
+            .dimline .line::after {
+                right: 0;
+            }
+            .dimline .label {
+                position: absolute;
+                top: 14px;
+                left: 50%;
+                transform: translateX(-50%);
+                background: var(--paper);
+                padding: 0 8px;
+            }
+            @keyframes drawx {
+                from {
+                    transform: scaleX(0);
+                }
+                to {
+                    transform: scaleX(1);
+                }
+            }
 
-  /* preview sheet */
-  .preview {
-    display: none;
-    padding: 28px;
-  }
-  .preview.active { display: block; }
-  .preview .sheet-out {
-    background: #fff;
-    border: 1px solid var(--ink-dim);
-    box-shadow: 0 18px 32px -20px rgba(13,58,92,.35);
-    padding: 36px 44px;
-    max-width: 640px;
-    margin: 0 auto;
-    color: #111;
-    font-family: 'Geist Mono', monospace;
-    line-height: 1.55;
-    position: relative;
-  }
-  .preview .sheet-out::before {
-    content: "Folio · 1 of 1";
-    position: absolute;
-    top: 12px; right: 16px;
-    font-family: var(--mono);
-    font-size: 9px;
-    letter-spacing: .24em;
-    text-transform: uppercase;
-    color: var(--ink-dim);
-  }
-  .preview h2 {
-    font-family: var(--display);
-    font-size: 26px;
-    margin: 0 0 18px;
-    color: var(--ink);
-    letter-spacing: .02em;
-  }
+            /* preview sheet */
+            .preview {
+                display: none;
+                padding: 28px;
+            }
+            .preview.active {
+                display: block;
+            }
+            .preview .sheet-out {
+                background: #fff;
+                border: 1px solid var(--ink-dim);
+                box-shadow: 0 18px 32px -20px rgba(13, 58, 92, 0.35);
+                padding: 36px 44px;
+                max-width: 640px;
+                margin: 0 auto;
+                color: #111;
+                font-family: 'Geist Mono', monospace;
+                line-height: 1.55;
+                position: relative;
+            }
+            .preview .sheet-out::before {
+                content: 'Folio · 1 of 1';
+                position: absolute;
+                top: 12px;
+                right: 16px;
+                font-family: var(--mono);
+                font-size: 9px;
+                letter-spacing: 0.24em;
+                text-transform: uppercase;
+                color: var(--ink-dim);
+            }
+            .preview h2 {
+                font-family: var(--display);
+                font-size: 26px;
+                margin: 0 0 18px;
+                color: var(--ink);
+                letter-spacing: 0.02em;
+            }
 
-  /* === Right rail === */
-  .rail {
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-  }
-  .rail .panel {
-    border: 1.5px solid var(--ink);
-    background: var(--paper);
-    box-shadow: 6px 6px 0 0 rgba(13,58,92,.08);
-  }
-  .rail .panel > h3 {
-    margin: 0;
-    background: var(--ink);
-    color: var(--paper);
-    padding: 5px 12px;
-    font-family: var(--display);
-    font-size: 11px;
-    letter-spacing: .14em;
-  }
-  .rail .panel > .pad { padding: 14px; }
+            /* === Right rail === */
+            .rail {
+                display: flex;
+                flex-direction: column;
+                gap: 14px;
+            }
+            .rail .panel {
+                border: 1.5px solid var(--ink);
+                background: var(--paper);
+                box-shadow: 6px 6px 0 0 rgba(13, 58, 92, 0.08);
+            }
+            .rail .panel > h3 {
+                margin: 0;
+                background: var(--ink);
+                color: var(--paper);
+                padding: 5px 12px;
+                font-family: var(--display);
+                font-size: 11px;
+                letter-spacing: 0.14em;
+            }
+            .rail .panel > .pad {
+                padding: 14px;
+            }
 
-  /* big stat (Doto) */
-  .stat {
-    display: grid;
-    grid-template-columns: 1fr auto;
-    gap: 12px;
-    align-items: end;
-    padding-bottom: 14px;
-    border-bottom: 1px dashed var(--paper-grid-1);
-  }
-  .stat + .stat { padding-top: 14px; }
-  .stat .k {
-    font-family: var(--mono);
-    font-size: 10px;
-    text-transform: uppercase;
-    letter-spacing: .18em;
-    color: var(--ink-dim);
-    margin-bottom: 4px;
-  }
-  .stat .v {
-    font-family: var(--dot);
-    font-variation-settings: 'ROND' 50;
-    font-weight: 500;
-    font-size: 36px;
-    line-height: .9;
-    color: var(--ink);
-    letter-spacing: -.01em;
-  }
-  .stat .v.warn { color: var(--orange); }
-  .stat .v.ok   { color: var(--green); }
-  .stat .u {
-    font-family: var(--mono);
-    font-size: 10px;
-    letter-spacing: .2em;
-    text-transform: uppercase;
-    color: var(--ink-dim);
-  }
+            /* big stat (Doto) */
+            .stat {
+                display: grid;
+                grid-template-columns: 1fr auto;
+                gap: 12px;
+                align-items: end;
+                padding-bottom: 14px;
+                border-bottom: 1px dashed var(--paper-grid-1);
+            }
+            .stat + .stat {
+                padding-top: 14px;
+            }
+            .stat .k {
+                font-family: var(--mono);
+                font-size: 10px;
+                text-transform: uppercase;
+                letter-spacing: 0.18em;
+                color: var(--ink-dim);
+                margin-bottom: 4px;
+            }
+            .stat .v {
+                font-family: var(--dot);
+                font-variation-settings: 'ROND' 50;
+                font-weight: 500;
+                font-size: 36px;
+                line-height: 0.9;
+                color: var(--ink);
+                letter-spacing: -0.01em;
+            }
+            .stat .v.warn {
+                color: var(--orange);
+            }
+            .stat .v.ok {
+                color: var(--green);
+            }
+            .stat .u {
+                font-family: var(--mono);
+                font-size: 10px;
+                letter-spacing: 0.2em;
+                text-transform: uppercase;
+                color: var(--ink-dim);
+            }
 
-  /* RUN button */
-  .run-wrap {
-    padding: 14px;
-    background:
-      repeating-linear-gradient(45deg, var(--paper-2) 0 2px, transparent 2px 8px);
-    border-top: 1.5px solid var(--ink);
-  }
-  .run {
-    width: 100%;
-    border: 0;
-    background: var(--orange);
-    color: white;
-    padding: 22px 18px 16px;
-    font-family: var(--display);
-    font-size: 26px;
-    letter-spacing: .12em;
-    cursor: pointer;
-    position: relative;
-    box-shadow:
-      inset 0 0 0 2px rgba(0,0,0,.18),
-      0 4px 0 var(--orange-2),
-      0 8px 14px -6px rgba(232,93,34,.55);
-    transition: transform 100ms ease, box-shadow 100ms ease, background 200ms ease, filter 200ms ease;
-  }
-  .run:hover { filter: brightness(1.05); }
-  .run:active {
-    transform: translateY(4px);
-    box-shadow:
-      inset 0 0 0 2px rgba(0,0,0,.22),
-      0 0 0 var(--orange-2),
-      0 2px 6px -2px rgba(232,93,34,.5);
-  }
-  .run small {
-    display: block;
-    margin-top: 6px;
-    font-family: var(--mono);
-    font-size: 10px;
-    letter-spacing: .24em;
-    color: rgba(255,255,255,.75);
-    font-weight: 400;
-  }
-  .run:disabled {
-    background: var(--paper-2);
-    color: var(--ink-dim);
-    box-shadow: inset 0 0 0 2px var(--ink-dim);
-    cursor: not-allowed;
-  }
-  .run:disabled small { color: var(--ink-dim); }
+            /* RUN button */
+            .run-wrap {
+                padding: 14px;
+                background: repeating-linear-gradient(
+                    45deg,
+                    var(--paper-2) 0 2px,
+                    transparent 2px 8px
+                );
+                border-top: 1.5px solid var(--ink);
+            }
+            .run {
+                width: 100%;
+                border: 0;
+                background: var(--orange);
+                color: white;
+                padding: 22px 18px 16px;
+                font-family: var(--display);
+                font-size: 26px;
+                letter-spacing: 0.12em;
+                cursor: pointer;
+                position: relative;
+                box-shadow:
+                    inset 0 0 0 2px rgba(0, 0, 0, 0.18),
+                    0 4px 0 var(--orange-2),
+                    0 8px 14px -6px rgba(232, 93, 34, 0.55);
+                transition:
+                    transform 100ms ease,
+                    box-shadow 100ms ease,
+                    background 200ms ease,
+                    filter 200ms ease;
+            }
+            .run:hover {
+                filter: brightness(1.05);
+            }
+            .run:active {
+                transform: translateY(4px);
+                box-shadow:
+                    inset 0 0 0 2px rgba(0, 0, 0, 0.22),
+                    0 0 0 var(--orange-2),
+                    0 2px 6px -2px rgba(232, 93, 34, 0.5);
+            }
+            .run small {
+                display: block;
+                margin-top: 6px;
+                font-family: var(--mono);
+                font-size: 10px;
+                letter-spacing: 0.24em;
+                color: rgba(255, 255, 255, 0.75);
+                font-weight: 400;
+            }
+            .run:disabled {
+                background: var(--paper-2);
+                color: var(--ink-dim);
+                box-shadow: inset 0 0 0 2px var(--ink-dim);
+                cursor: not-allowed;
+            }
+            .run:disabled small {
+                color: var(--ink-dim);
+            }
 
-  /* progress bar under RUN */
-  .progress {
-    height: 6px;
-    background: var(--paper-2);
-    border: 1.5px solid var(--ink);
-    border-top: 0;
-    overflow: hidden;
-    position: relative;
-  }
-  .progress > div {
-    position: absolute;
-    inset: 0;
-    background: repeating-linear-gradient(90deg, var(--orange) 0 8px, var(--orange-2) 8px 16px);
-    width: 0%;
-    transition: width 220ms ease;
-  }
-  .progress.indeterminate > div {
-    width: 30%;
-    animation: indet 1.2s ease-in-out infinite alternate;
-  }
-  @keyframes indet {
-    from { transform: translateX(-30%); }
-    to   { transform: translateX(330%); }
-  }
+            /* progress bar under RUN */
+            .progress {
+                height: 6px;
+                background: var(--paper-2);
+                border: 1.5px solid var(--ink);
+                border-top: 0;
+                overflow: hidden;
+                position: relative;
+            }
+            .progress > div {
+                position: absolute;
+                inset: 0;
+                background: repeating-linear-gradient(
+                    90deg,
+                    var(--orange) 0 8px,
+                    var(--orange-2) 8px 16px
+                );
+                width: 0%;
+                transition: width 220ms ease;
+            }
+            .progress.indeterminate > div {
+                width: 30%;
+                animation: indet 1.2s ease-in-out infinite alternate;
+            }
+            @keyframes indet {
+                from {
+                    transform: translateX(-30%);
+                }
+                to {
+                    transform: translateX(330%);
+                }
+            }
 
-  /* status LEDs grid */
-  .leds {
-    display: grid;
-    grid-template-columns: auto 1fr auto;
-    gap: 6px 10px;
-    align-items: center;
-    margin-top: 6px;
-  }
-  .leds .dot {
-    width: 9px; height: 9px;
-    border-radius: 50%;
-    background: var(--paper-2);
-    border: 1px solid var(--ink);
-    box-shadow: inset 0 1px 1px rgba(0,0,0,.2);
-  }
-  .leds .dot.on { box-shadow: 0 0 0 1px rgba(0,0,0,.35), 0 0 6px currentColor; }
-  .leds .dot.green.on   { background: var(--green-2); color: var(--green-2); }
-  .leds .dot.amber.on   { background: var(--amber-2); color: var(--amber-2); animation: blink 1.2s ease-in-out infinite; }
-  .leds .dot.red.on     { background: #ff5454; color: #ff5454; animation: blink 0.8s ease-in-out infinite; }
-  .leds .name {
-    font-family: var(--display);
-    font-size: 12px;
-    letter-spacing: .08em;
-    color: var(--ink);
-  }
-  .leds .code {
-    font-family: var(--mono);
-    font-size: 10px;
-    letter-spacing: .18em;
-    color: var(--ink-dim);
-    text-transform: uppercase;
-  }
+            /* status LEDs grid */
+            .leds {
+                display: grid;
+                grid-template-columns: auto 1fr auto;
+                gap: 6px 10px;
+                align-items: center;
+                margin-top: 6px;
+            }
+            .leds .dot {
+                width: 9px;
+                height: 9px;
+                border-radius: 50%;
+                background: var(--paper-2);
+                border: 1px solid var(--ink);
+                box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.2);
+            }
+            .leds .dot.on {
+                box-shadow:
+                    0 0 0 1px rgba(0, 0, 0, 0.35),
+                    0 0 6px currentColor;
+            }
+            .leds .dot.green.on {
+                background: var(--green-2);
+                color: var(--green-2);
+            }
+            .leds .dot.amber.on {
+                background: var(--amber-2);
+                color: var(--amber-2);
+                animation: blink 1.2s ease-in-out infinite;
+            }
+            .leds .dot.red.on {
+                background: #ff5454;
+                color: #ff5454;
+                animation: blink 0.8s ease-in-out infinite;
+            }
+            .leds .name {
+                font-family: var(--display);
+                font-size: 12px;
+                letter-spacing: 0.08em;
+                color: var(--ink);
+            }
+            .leds .code {
+                font-family: var(--mono);
+                font-size: 10px;
+                letter-spacing: 0.18em;
+                color: var(--ink-dim);
+                text-transform: uppercase;
+            }
 
-  /* Diagnostic log */
-  .log {
-    font-family: var(--mono);
-    font-size: 11px;
-    line-height: 1.55;
-    color: var(--ink);
-    max-height: 200px;
-    overflow: auto;
-    padding-right: 4px;
-  }
-  .log .row { display: grid; grid-template-columns: auto 1fr; gap: 10px; padding: 2px 0; }
-  .log .t { color: var(--ink-faint); font-size: 10px; letter-spacing: .04em; }
-  .log .row.warn .m { color: var(--orange); }
-  .log .row.ok   .m { color: var(--green); }
-  .log .row.err  .m { color: var(--red); }
-  .log a { color: var(--ink); border-bottom: 1px solid var(--ink); text-decoration: none; }
-  .log a:hover { color: var(--orange); border-bottom-color: var(--orange); }
+            /* Diagnostic log */
+            .log {
+                font-family: var(--mono);
+                font-size: 11px;
+                line-height: 1.55;
+                color: var(--ink);
+                max-height: 200px;
+                overflow: auto;
+                padding-right: 4px;
+            }
+            .log .row {
+                display: grid;
+                grid-template-columns: auto 1fr;
+                gap: 10px;
+                padding: 2px 0;
+            }
+            .log .t {
+                color: var(--ink-faint);
+                font-size: 10px;
+                letter-spacing: 0.04em;
+            }
+            .log .row.warn .m {
+                color: var(--orange);
+            }
+            .log .row.ok .m {
+                color: var(--green);
+            }
+            .log .row.err .m {
+                color: var(--red);
+            }
+            .log a {
+                color: var(--ink);
+                border-bottom: 1px solid var(--ink);
+                text-decoration: none;
+            }
+            .log a:hover {
+                color: var(--orange);
+                border-bottom-color: var(--orange);
+            }
 
-  /* === footer title-block === */
-  .footblock {
-    display: grid;
-    grid-template-columns: repeat(6, 1fr);
-    border-top: 2px solid var(--ink);
-    border-left: 0;
-    margin-top: 22px;
-  }
-  .footblock .cell {
-    border-right: 1.5px solid var(--ink);
-    padding: 10px 12px;
-    background: var(--paper);
-  }
-  .footblock .cell:last-child { border-right: 0; }
-  .footblock .cell .k {
-    font-family: var(--mono);
-    font-size: 9px;
-    letter-spacing: .26em;
-    text-transform: uppercase;
-    color: var(--ink-dim);
-  }
-  .footblock .cell .v {
-    font-family: var(--display);
-    font-size: 14px;
-    color: var(--ink);
-    letter-spacing: .05em;
-    margin-top: 2px;
-  }
-  .footblock .cell .v.orange { color: var(--orange); }
+            /* === footer title-block === */
+            .footblock {
+                display: grid;
+                grid-template-columns: repeat(6, 1fr);
+                border-top: 2px solid var(--ink);
+                border-left: 0;
+                margin-top: 22px;
+            }
+            .footblock .cell {
+                border-right: 1.5px solid var(--ink);
+                padding: 10px 12px;
+                background: var(--paper);
+            }
+            .footblock .cell:last-child {
+                border-right: 0;
+            }
+            .footblock .cell .k {
+                font-family: var(--mono);
+                font-size: 9px;
+                letter-spacing: 0.26em;
+                text-transform: uppercase;
+                color: var(--ink-dim);
+            }
+            .footblock .cell .v {
+                font-family: var(--display);
+                font-size: 14px;
+                color: var(--ink);
+                letter-spacing: 0.05em;
+                margin-top: 2px;
+            }
+            .footblock .cell .v.orange {
+                color: var(--orange);
+            }
 
-  /* === Mouse coordinates readout === */
-  .coords {
-    position: fixed;
-    bottom: 12px; left: 12px;
-    z-index: 50;
-    font-family: var(--mono);
-    font-size: 10px;
-    color: var(--ink);
-    background: var(--paper);
-    border: 1.5px solid var(--ink);
-    padding: 5px 9px;
-    letter-spacing: .14em;
-    text-transform: uppercase;
-    pointer-events: none;
-    box-shadow: 3px 3px 0 0 rgba(13,58,92,.12);
-  }
-  .coords span { color: var(--orange); }
+            /* === Mouse coordinates readout === */
+            .coords {
+                position: fixed;
+                bottom: 12px;
+                left: 12px;
+                z-index: 50;
+                font-family: var(--mono);
+                font-size: 10px;
+                color: var(--ink);
+                background: var(--paper);
+                border: 1.5px solid var(--ink);
+                padding: 5px 9px;
+                letter-spacing: 0.14em;
+                text-transform: uppercase;
+                pointer-events: none;
+                box-shadow: 3px 3px 0 0 rgba(13, 58, 92, 0.12);
+            }
+            .coords span {
+                color: var(--orange);
+            }
 
-  /* === Demo bar === */
-  .demo-bar {
-    position: fixed;
-    bottom: 12px; right: 12px;
-    z-index: 50;
-    display: flex;
-    gap: 6px;
-    background: var(--metal);
-    border: 1.5px solid var(--metal-2);
-    padding: 6px;
-    font-family: var(--display);
-    font-size: 10px;
-    letter-spacing: .12em;
-  }
-  .demo-bar button {
-    border: 1px solid #2a3a44;
-    background: transparent;
-    color: #cfd6dd;
-    padding: 5px 9px;
-    cursor: pointer;
-    font: inherit;
-    letter-spacing: inherit;
-  }
-  .demo-bar button.on {
-    background: var(--orange);
-    border-color: var(--orange);
-    color: #fff;
-  }
+            /* === Demo bar === */
+            .demo-bar {
+                position: fixed;
+                bottom: 12px;
+                right: 12px;
+                z-index: 50;
+                display: flex;
+                gap: 6px;
+                background: var(--metal);
+                border: 1.5px solid var(--metal-2);
+                padding: 6px;
+                font-family: var(--display);
+                font-size: 10px;
+                letter-spacing: 0.12em;
+            }
+            .demo-bar button {
+                border: 1px solid #2a3a44;
+                background: transparent;
+                color: #cfd6dd;
+                padding: 5px 9px;
+                cursor: pointer;
+                font: inherit;
+                letter-spacing: inherit;
+            }
+            .demo-bar button.on {
+                background: var(--orange);
+                border-color: var(--orange);
+                color: #fff;
+            }
 
-  /* === Entry animations === */
-  @keyframes lift {
-    from { opacity: 0; transform: translateY(10px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-  .strip, .titleblock, .body, .footblock {
-    animation: lift 680ms cubic-bezier(.2,.7,.2,1) both;
-  }
-  .titleblock { animation-delay: 90ms; }
-  .body       { animation-delay: 180ms; }
-  .footblock  { animation-delay: 280ms; }
+            /* === Entry animations === */
+            @keyframes lift {
+                from {
+                    opacity: 0;
+                    transform: translateY(10px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+            .strip,
+            .titleblock,
+            .body,
+            .footblock {
+                animation: lift 680ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+            }
+            .titleblock {
+                animation-delay: 90ms;
+            }
+            .body {
+                animation-delay: 180ms;
+            }
+            .footblock {
+                animation-delay: 280ms;
+            }
 
-  /* slot-machine numeric roll */
-  @keyframes rollIn {
-    from { opacity: 0; transform: translateY(-12px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-  .roll { display: inline-block; animation: rollIn 280ms ease-out; }
+            /* slot-machine numeric roll */
+            @keyframes rollIn {
+                from {
+                    opacity: 0;
+                    transform: translateY(-12px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+            .roll {
+                display: inline-block;
+                animation: rollIn 280ms ease-out;
+            }
 
-  /* small screens */
-  @media (max-width: 940px) {
-    .body { grid-template-columns: 1fr; }
-    .titleblock { grid-template-columns: 1fr; }
-    .titleblock .mark { font-size: 52px; }
-    .titleblock .stamp { transform: rotate(0); justify-self: start; }
-  }
-</style>
-</head>
-<body>
-
-<!-- top status strip -->
-<div class="strip">
-  <div><span class="label">BUILD</span> <span class="value">1.0.0</span></div>
-  <div><span class="led green" id="ledMain"></span><span class="value" id="stripState">READY</span></div>
-  <div><span class="label">RATE</span> <span class="value" id="stripRate">17 / 20</span></div>
-  <div><span class="label">ORIGIN</span> <span class="value">localhost:5173</span></div>
-  <div><span class="label">CORS</span> <span class="value" style="color: var(--green-2)">PASS</span></div>
-  <div><span class="label">JOB</span> <span class="value" id="stripJob">—</span></div>
-  <div class="ticker"><span>HTML / MARKDOWN → PDF · ENGINEERED FOR THE LINE · PRESS A KEY TO BEGIN · PT-PDF-001 · REVISION A · 2026 · SHEET 1 OF 1 · PRESSROOM OPEN ·&nbsp;&nbsp;</span></div>
-  <div><span class="label">UTC</span> <span class="value" id="stripUtc">--:--:--</span></div>
-</div>
-
-<div class="sheet">
-  <div class="frame">
-    <div class="tick-tr"></div>
-    <div class="tick-br"></div>
-
-    <!-- title block -->
-    <div class="titleblock">
-      <div class="mark">PLATE<sup>™</sup></div>
-      <div class="desc">
-        <span class="h">PART · PT-PDF-001 · REV A</span>
-        HTML <span class="arrow">/</span> MARKDOWN <span class="arrow">→</span> PDF<br>
-        Sandboxed render. Sanitized. S3-signed. <span class="arrow">10 min</span> validity.
-      </div>
-      <div class="stamp">
-        <span>REV</span><b>A</b>
-        <span>DATE</span><b id="stampDate">2026 · 05 · 15</b>
-        <span>SHEET</span><b>01 / 01</b>
-      </div>
-    </div>
-
-    <!-- body: editor | rail -->
-    <div class="body">
-      <div>
-        <!-- tab switches -->
-        <div class="switches">
-          <div class="switch on" data-tab="editor">
-            <span class="body"></span>
-            <span class="name">MANUSCRIPT <small>·  EDIT</small></span>
-          </div>
-          <div class="switch" data-tab="preview">
-            <span class="body"></span>
-            <span class="name">PROOF <small>·  PREVIEW</small></span>
-          </div>
+            /* small screens */
+            @media (max-width: 940px) {
+                .body {
+                    grid-template-columns: 1fr;
+                }
+                .titleblock {
+                    grid-template-columns: 1fr;
+                }
+                .titleblock .mark {
+                    font-size: 52px;
+                }
+                .titleblock .stamp {
+                    transform: rotate(0);
+                    justify-self: start;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <!-- top status strip -->
+        <div class="strip">
+            <div><span class="label">BUILD</span> <span class="value">1.0.0</span></div>
+            <div>
+                <span class="led green" id="ledMain"></span
+                ><span class="value" id="stripState">READY</span>
+            </div>
+            <div>
+                <span class="label">RATE</span> <span class="value" id="stripRate">17 / 20</span>
+            </div>
+            <div><span class="label">ORIGIN</span> <span class="value">localhost:5173</span></div>
+            <div>
+                <span class="label">CORS</span>
+                <span class="value" style="color: var(--green-2)">PASS</span>
+            </div>
+            <div><span class="label">JOB</span> <span class="value" id="stripJob">—</span></div>
+            <div class="ticker">
+                <span
+                    >HTML / MARKDOWN → PDF · ENGINEERED FOR THE LINE · PRESS A KEY TO BEGIN ·
+                    PT-PDF-001 · REVISION A · 2026 · SHEET 1 OF 1 · PRESSROOM OPEN
+                    ·&nbsp;&nbsp;</span
+                >
+            </div>
+            <div>
+                <span class="label">UTC</span> <span class="value" id="stripUtc">--:--:--</span>
+            </div>
         </div>
 
-        <!-- editor card -->
-        <div class="card" id="editorCard">
-          <div class="cardhead">
-            <span>MANUSCRIPT · INPUT</span>
-            <span class="badge" id="hdrType">MARKDOWN</span>
-          </div>
-          <div class="body-wrap" id="editorBody">
-            <pre class="gutter" id="gutter">1</pre>
-            <textarea class="editor" id="editor" spellcheck="false" placeholder="// paste html or markdown — 10 to 50 000 characters."></textarea>
-            <div class="dimline">
-              <div class="line"></div>
-              <div class="label">10 — 50 000 CHARS</div>
+        <div class="sheet">
+            <div class="frame">
+                <div class="tick-tr"></div>
+                <div class="tick-br"></div>
+
+                <!-- title block -->
+                <div class="titleblock">
+                    <div class="mark">PLATE<sup>™</sup></div>
+                    <div class="desc">
+                        <span class="h">PART · PT-PDF-001 · REV A</span>
+                        HTML <span class="arrow">/</span> MARKDOWN
+                        <span class="arrow">→</span> PDF<br />
+                        Sandboxed render. Sanitized. S3-signed.
+                        <span class="arrow">10 min</span> validity.
+                    </div>
+                    <div class="stamp">
+                        <span>REV</span><b>A</b> <span>DATE</span
+                        ><b id="stampDate">2026 · 05 · 15</b> <span>SHEET</span><b>01 / 01</b>
+                    </div>
+                </div>
+
+                <!-- body: editor | rail -->
+                <div class="body">
+                    <div>
+                        <!-- tab switches -->
+                        <div class="switches">
+                            <div class="switch on" data-tab="editor">
+                                <span class="body"></span>
+                                <span class="name">MANUSCRIPT <small>· EDIT</small></span>
+                            </div>
+                            <div class="switch" data-tab="preview">
+                                <span class="body"></span>
+                                <span class="name">PROOF <small>· PREVIEW</small></span>
+                            </div>
+                        </div>
+
+                        <!-- editor card -->
+                        <div class="card" id="editorCard">
+                            <div class="cardhead">
+                                <span>MANUSCRIPT · INPUT</span>
+                                <span class="badge" id="hdrType">MARKDOWN</span>
+                            </div>
+                            <div class="body-wrap" id="editorBody">
+                                <pre class="gutter" id="gutter">1</pre>
+                                <textarea
+                                    class="editor"
+                                    id="editor"
+                                    spellcheck="false"
+                                    placeholder="// paste html or markdown — 10 to 50 000 characters."
+                                ></textarea>
+                                <div class="dimline">
+                                    <div class="line"></div>
+                                    <div class="label">10 — 50 000 CHARS</div>
+                                </div>
+                            </div>
+                            <div class="preview" id="preview">
+                                <div class="sheet-out">
+                                    <h2>RENDERED PROOF</h2>
+                                    <p>
+                                        This sheet shows what will be pressed to PDF — sandboxed,
+                                        sanitized, no scripts, no external loads.
+                                    </p>
+                                    <ul>
+                                        <li>Set in <strong>Geist Mono</strong> on white stock.</li>
+                                        <li>Headlines use <strong>Major Mono Display</strong>.</li>
+                                        <li>Folio mark in the upper right.</li>
+                                    </ul>
+                                    <p>The proof updates with a 150 ms debounce while you type.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- right rail -->
+                    <div class="rail">
+                        <!-- spec readouts -->
+                        <div class="panel">
+                            <h3>SPEC</h3>
+                            <div class="pad">
+                                <div class="stat">
+                                    <div>
+                                        <div class="k">char count</div>
+                                        <div class="v" id="dotChars">0000</div>
+                                    </div>
+                                    <div class="u">/ 50 000</div>
+                                </div>
+                                <div class="stat">
+                                    <div>
+                                        <div class="k">detected · type</div>
+                                        <div class="v" id="dotType" style="font-size: 28px">MD</div>
+                                    </div>
+                                    <div class="u" id="dotTypeLabel">MARKDOWN</div>
+                                </div>
+                                <div class="stat">
+                                    <div>
+                                        <div class="k">timeout</div>
+                                        <div class="v" style="font-size: 28px">120</div>
+                                    </div>
+                                    <div class="u">SECONDS</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- ENGAGE / RUN -->
+                        <div class="panel">
+                            <h3>OPERATE</h3>
+                            <div style="padding: 14px 14px 0">
+                                <button class="run" id="runBtn">
+                                    ENGAGE
+                                    <small id="runSub">⌘/CTRL + ↵ · SET + PRESS</small>
+                                </button>
+                                <div class="progress" id="prog"><div></div></div>
+                                <div class="leds">
+                                    <span class="dot green on" id="ledReady"></span>
+                                    <span class="name">READY</span>
+                                    <span class="code">idle</span>
+
+                                    <span class="dot amber" id="ledQueue"></span>
+                                    <span class="name">QUEUE</span>
+                                    <span class="code">enqueueing</span>
+
+                                    <span class="dot amber" id="ledRun"></span>
+                                    <span class="name">RUN</span>
+                                    <span class="code">on press</span>
+
+                                    <span class="dot green" id="ledDone"></span>
+                                    <span class="name">DONE</span>
+                                    <span class="code">presigned</span>
+
+                                    <span class="dot red" id="ledFault"></span>
+                                    <span class="name">FAULT</span>
+                                    <span class="code">err / 429</span>
+                                </div>
+                            </div>
+                            <div class="run-wrap" style="margin-top: 14px">
+                                <div
+                                    style="
+                                        font-family: var(--mono);
+                                        font-size: 10px;
+                                        letter-spacing: 0.18em;
+                                        text-transform: uppercase;
+                                        color: var(--ink-dim);
+                                    "
+                                >
+                                    Caution · 20 req/min on POST · 120 req/min on GET
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- log -->
+                        <div class="panel">
+                            <h3>LOG</h3>
+                            <div class="pad">
+                                <div class="log" id="log"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- title-block footer -->
+                <div class="footblock">
+                    <div class="cell">
+                        <div class="k">drawn</div>
+                        <div class="v">USR</div>
+                    </div>
+                    <div class="cell">
+                        <div class="k">checked</div>
+                        <div class="v">CI</div>
+                    </div>
+                    <div class="cell">
+                        <div class="k">scale</div>
+                        <div class="v">1 : 1</div>
+                    </div>
+                    <div class="cell">
+                        <div class="k">units</div>
+                        <div class="v">CHAR</div>
+                    </div>
+                    <div class="cell">
+                        <div class="k">material</div>
+                        <div class="v">PDF/A</div>
+                    </div>
+                    <div class="cell">
+                        <div class="k">rev</div>
+                        <div class="v orange">A</div>
+                    </div>
+                </div>
             </div>
-          </div>
-          <div class="preview" id="preview">
-            <div class="sheet-out">
-              <h2>RENDERED PROOF</h2>
-              <p>This sheet shows what will be pressed to PDF — sandboxed, sanitized, no scripts, no external loads.</p>
-              <ul>
-                <li>Set in <strong>Geist Mono</strong> on white stock.</li>
-                <li>Headlines use <strong>Major Mono Display</strong>.</li>
-                <li>Folio mark in the upper right.</li>
-              </ul>
-              <p>The proof updates with a 150 ms debounce while you type.</p>
-            </div>
-          </div>
         </div>
-      </div>
 
-      <!-- right rail -->
-      <div class="rail">
-        <!-- spec readouts -->
-        <div class="panel">
-          <h3>SPEC</h3>
-          <div class="pad">
-            <div class="stat">
-              <div>
-                <div class="k">char count</div>
-                <div class="v" id="dotChars">0000</div>
-              </div>
-              <div class="u">/ 50 000</div>
-            </div>
-            <div class="stat">
-              <div>
-                <div class="k">detected · type</div>
-                <div class="v" id="dotType" style="font-size:28px;">MD</div>
-              </div>
-              <div class="u" id="dotTypeLabel">MARKDOWN</div>
-            </div>
-            <div class="stat">
-              <div>
-                <div class="k">timeout</div>
-                <div class="v" style="font-size:28px;">120</div>
-              </div>
-              <div class="u">SECONDS</div>
-            </div>
-          </div>
+        <div class="coords" id="coords">
+            X <span id="cx">0000</span> · Y <span id="cy">0000</span>
         </div>
 
-        <!-- ENGAGE / RUN -->
-        <div class="panel">
-          <h3>OPERATE</h3>
-          <div style="padding: 14px 14px 0;">
-            <button class="run" id="runBtn">
-              ENGAGE
-              <small id="runSub">⌘/CTRL + ↵ · SET + PRESS</small>
-            </button>
-            <div class="progress" id="prog"><div></div></div>
-            <div class="leds">
-              <span class="dot green on" id="ledReady"></span>
-              <span class="name">READY</span>
-              <span class="code">idle</span>
-
-              <span class="dot amber" id="ledQueue"></span>
-              <span class="name">QUEUE</span>
-              <span class="code">enqueueing</span>
-
-              <span class="dot amber" id="ledRun"></span>
-              <span class="name">RUN</span>
-              <span class="code">on press</span>
-
-              <span class="dot green" id="ledDone"></span>
-              <span class="name">DONE</span>
-              <span class="code">presigned</span>
-
-              <span class="dot red" id="ledFault"></span>
-              <span class="name">FAULT</span>
-              <span class="code">err / 429</span>
-            </div>
-          </div>
-          <div class="run-wrap" style="margin-top: 14px;">
-            <div style="font-family: var(--mono); font-size: 10px; letter-spacing: .18em; text-transform: uppercase; color: var(--ink-dim);">Caution · 20 req/min on POST · 120 req/min on GET</div>
-          </div>
+        <div class="demo-bar" aria-label="State preview">
+            <button data-state="idle" class="on">IDLE</button>
+            <button data-state="submitting">SET</button>
+            <button data-state="polling">RUN</button>
+            <button data-state="completed">DONE</button>
+            <button data-state="failed">FAULT</button>
+            <button data-state="rate">429</button>
         </div>
 
-        <!-- log -->
-        <div class="panel">
-          <h3>LOG</h3>
-          <div class="pad">
-            <div class="log" id="log"></div>
-          </div>
-        </div>
-      </div>
-    </div>
+        <script>
+            // --- time ---
+            const stampDate = document.getElementById('stampDate')
+            const stripUtc = document.getElementById('stripUtc')
+            const tick = () => {
+                const d = new Date()
+                const pad = (n) => n.toString().padStart(2, '0')
+                stampDate.textContent = `${d.getUTCFullYear()} · ${pad(d.getUTCMonth() + 1)} · ${pad(d.getUTCDate())}`
+                stripUtc.textContent = `${pad(d.getUTCHours())}:${pad(d.getUTCMinutes())}:${pad(d.getUTCSeconds())} Z`
+            }
+            tick()
+            setInterval(tick, 1000)
 
-    <!-- title-block footer -->
-    <div class="footblock">
-      <div class="cell"><div class="k">drawn</div><div class="v">USR</div></div>
-      <div class="cell"><div class="k">checked</div><div class="v">CI</div></div>
-      <div class="cell"><div class="k">scale</div><div class="v">1 : 1</div></div>
-      <div class="cell"><div class="k">units</div><div class="v">CHAR</div></div>
-      <div class="cell"><div class="k">material</div><div class="v">PDF/A</div></div>
-      <div class="cell"><div class="k">rev</div><div class="v orange">A</div></div>
-    </div>
-  </div>
-</div>
+            // --- mouse coords (snap to 10-px grid) ---
+            const cx = document.getElementById('cx')
+            const cy = document.getElementById('cy')
+            let ticking = false
+            document.addEventListener(
+                'pointermove',
+                (e) => {
+                    if (ticking) return
+                    ticking = true
+                    requestAnimationFrame(() => {
+                        const x = Math.round(e.clientX / 10) * 10
+                        const y = Math.round(e.clientY / 10) * 10
+                        cx.textContent = x.toString().padStart(4, '0')
+                        cy.textContent = y.toString().padStart(4, '0')
+                        ticking = false
+                    })
+                },
+                {passive: true},
+            )
 
-<div class="coords" id="coords">X <span id="cx">0000</span> · Y <span id="cy">0000</span></div>
+            // --- tabs ---
+            const editorBody = document.getElementById('editorBody')
+            const preview = document.getElementById('preview')
+            document.querySelectorAll('.switch').forEach((sw) => {
+                sw.addEventListener('click', () => {
+                    document.querySelectorAll('.switch').forEach((s) => s.classList.remove('on'))
+                    sw.classList.add('on')
+                    const which = sw.dataset.tab
+                    editorBody.style.display = which === 'editor' ? 'block' : 'none'
+                    preview.classList.toggle('active', which === 'preview')
+                })
+            })
 
-<div class="demo-bar" aria-label="State preview">
-  <button data-state="idle" class="on">IDLE</button>
-  <button data-state="submitting">SET</button>
-  <button data-state="polling">RUN</button>
-  <button data-state="completed">DONE</button>
-  <button data-state="failed">FAULT</button>
-  <button data-state="rate">429</button>
-</div>
+            // --- editor + dots ---
+            const editor = document.getElementById('editor')
+            const dotChars = document.getElementById('dotChars')
+            const dotType = document.getElementById('dotType')
+            const dotTypeLbl = document.getElementById('dotTypeLabel')
+            const hdrType = document.getElementById('hdrType')
+            const gutter = document.getElementById('gutter')
 
-<script>
-  // --- time ---
-  const stampDate = document.getElementById('stampDate');
-  const stripUtc  = document.getElementById('stripUtc');
-  const tick = () => {
-    const d = new Date();
-    const pad = (n) => n.toString().padStart(2,'0');
-    stampDate.textContent = `${d.getUTCFullYear()} · ${pad(d.getUTCMonth()+1)} · ${pad(d.getUTCDate())}`;
-    stripUtc.textContent  = `${pad(d.getUTCHours())}:${pad(d.getUTCMinutes())}:${pad(d.getUTCSeconds())} Z`;
-  };
-  tick(); setInterval(tick, 1000);
+            const mdIndicators = [
+                /^#{1,6}\s/m,
+                /^\s*[*\-+]\s/m,
+                /^\s*\d+\.\s/m,
+                /\*\*[^*]+\*\*/,
+                /(^|\s)_[^_]+_(\s|$)/,
+                /^\s*>\s/m,
+                /^```/m,
+                /^\s*\|.*\|\s*$/m,
+                /\[[^\]]+\]\([^)]+\)/,
+            ]
+            const detect = (s) => {
+                const t = s.trim()
+                if (t.startsWith('<')) return 'html'
+                if (mdIndicators.some((r) => r.test(t))) return 'markdown'
+                return 'html'
+            }
+            const pad4 = (n) => n.toString().padStart(4, '0')
+            const rollNum = (el, next) => {
+                if (el.textContent === next) return
+                el.classList.remove('roll')
+                void el.offsetWidth // restart animation
+                el.classList.add('roll')
+                el.textContent = next
+            }
+            const updateMeta = () => {
+                const v = editor.value
+                const c = v.length
+                rollNum(dotChars, pad4(c))
+                dotChars.classList.toggle('warn', c < 10 || c > 50000)
+                dotChars.classList.toggle('ok', c >= 10 && c <= 50000)
+                const t = v.length ? detect(v) : 'markdown'
+                hdrType.textContent = t.toUpperCase()
+                dotType.textContent = t === 'markdown' ? 'MD' : 'HT'
+                dotTypeLbl.textContent = t.toUpperCase()
+                const lines = v.split('\n').length || 1
+                let g = ''
+                for (let i = 1; i <= Math.max(lines, 18); i++) g += pad4(i).slice(-2) + '\n'
+                gutter.textContent = g
+            }
+            editor.addEventListener('input', updateMeta)
+            updateMeta()
 
-  // --- mouse coords (snap to 10-px grid) ---
-  const cx = document.getElementById('cx');
-  const cy = document.getElementById('cy');
-  let ticking = false;
-  document.addEventListener('pointermove', (e) => {
-    if (ticking) return;
-    ticking = true;
-    requestAnimationFrame(() => {
-      const x = Math.round(e.clientX / 10) * 10;
-      const y = Math.round(e.clientY / 10) * 10;
-      cx.textContent = x.toString().padStart(4, '0');
-      cy.textContent = y.toString().padStart(4, '0');
-      ticking = false;
-    });
-  }, { passive: true });
+            // --- LOG ---
+            const logEl = document.getElementById('log')
+            const logLine = (msg, tone) => {
+                const t = new Date().toLocaleTimeString('en-GB', {hour12: false})
+                const row = document.createElement('div')
+                row.className = 'row' + (tone ? ' ' + tone : '')
+                row.innerHTML = `<span class="t">${t}</span><span class="m">${msg}</span>`
+                logEl.prepend(row)
+                while (logEl.children.length > 18) logEl.lastChild.remove()
+            }
+            logLine('pressroom · open · localhost:5173')
+            logLine('cors · allow · http://localhost:5173', 'ok')
+            logLine('redis · ping · pong', 'ok')
 
-  // --- tabs ---
-  const editorBody = document.getElementById('editorBody');
-  const preview    = document.getElementById('preview');
-  document.querySelectorAll('.switch').forEach((sw) => {
-    sw.addEventListener('click', () => {
-      document.querySelectorAll('.switch').forEach((s) => s.classList.remove('on'));
-      sw.classList.add('on');
-      const which = sw.dataset.tab;
-      editorBody.style.display = (which === 'editor')  ? 'block' : 'none';
-      preview.classList.toggle('active', which === 'preview');
-    });
-  });
+            // --- state machine ---
+            const stripState = document.getElementById('stripState')
+            const stripJob = document.getElementById('stripJob')
+            const ledMain = document.getElementById('ledMain')
+            const ledReady = document.getElementById('ledReady')
+            const ledQueue = document.getElementById('ledQueue')
+            const ledRun = document.getElementById('ledRun')
+            const ledDone = document.getElementById('ledDone')
+            const ledFault = document.getElementById('ledFault')
+            const allLeds = [ledReady, ledQueue, ledRun, ledDone, ledFault]
+            const runBtn = document.getElementById('runBtn')
+            const runSub = document.getElementById('runSub')
+            const prog = document.getElementById('prog')
+            const progBar = prog.querySelector('div')
 
-  // --- editor + dots ---
-  const editor      = document.getElementById('editor');
-  const dotChars    = document.getElementById('dotChars');
-  const dotType     = document.getElementById('dotType');
-  const dotTypeLbl  = document.getElementById('dotTypeLabel');
-  const hdrType     = document.getElementById('hdrType');
-  const gutter      = document.getElementById('gutter');
+            let cycleTimers = []
+            const clearCycle = () => {
+                cycleTimers.forEach(clearTimeout)
+                cycleTimers = []
+            }
+            const setLed = (which, color) => {
+                allLeds.forEach((l) => l.classList.remove('on'))
+                if (!which) return
+                which.classList.add('on')
+                // strip LED color match
+                ledMain.className = 'led ' + color
+            }
 
-  const mdIndicators = [
-    /^#{1,6}\s/m, /^\s*[*\-+]\s/m, /^\s*\d+\.\s/m, /\*\*[^*]+\*\*/,
-    /(^|\s)_[^_]+_(\s|$)/, /^\s*>\s/m, /^```/m, /^\s*\|.*\|\s*$/m, /\[[^\]]+\]\([^)]+\)/
-  ];
-  const detect = (s) => {
-    const t = s.trim();
-    if (t.startsWith('<')) return 'html';
-    if (mdIndicators.some((r) => r.test(t))) return 'markdown';
-    return 'html';
-  };
-  const pad4 = (n) => n.toString().padStart(4, '0');
-  const rollNum = (el, next) => {
-    if (el.textContent === next) return;
-    el.classList.remove('roll');
-    void el.offsetWidth; // restart animation
-    el.classList.add('roll');
-    el.textContent = next;
-  };
-  const updateMeta = () => {
-    const v = editor.value;
-    const c = v.length;
-    rollNum(dotChars, pad4(c));
-    dotChars.classList.toggle('warn', c < 10 || c > 50000);
-    dotChars.classList.toggle('ok',   c >= 10 && c <= 50000);
-    const t = v.length ? detect(v) : 'markdown';
-    hdrType.textContent = t.toUpperCase();
-    dotType.textContent = t === 'markdown' ? 'MD' : 'HT';
-    dotTypeLbl.textContent = t.toUpperCase();
-    const lines = v.split('\n').length || 1;
-    let g = '';
-    for (let i = 1; i <= Math.max(lines, 18); i++) g += pad4(i).slice(-2) + '\n';
-    gutter.textContent = g;
-  };
-  editor.addEventListener('input', updateMeta);
-  updateMeta();
+            let currentState = 'idle'
+            const setState = (k) => {
+                currentState = k
+                document
+                    .querySelectorAll('.demo-bar button')
+                    .forEach((b) => b.classList.toggle('on', b.dataset.state === k))
+                runBtn.disabled = k === 'submitting' || k === 'polling' || k === 'rate'
+                if (k === 'idle') {
+                    stripState.textContent = 'READY'
+                    setLed(ledReady, 'green')
+                    runBtn.innerHTML = `ENGAGE<small>⌘/CTRL + ↵ · SET + PRESS</small>`
+                    stripJob.textContent = '—'
+                    prog.classList.remove('indeterminate')
+                    progBar.style.width = '0%'
+                } else if (k === 'submitting') {
+                    stripState.textContent = 'SETTING'
+                    setLed(ledQueue, 'amber')
+                    runBtn.innerHTML = `SETTING<small>type — to plate</small>`
+                    prog.classList.add('indeterminate')
+                    progBar.style.width = '15%'
+                    logLine('POST /pdf · 202 · job pending', 'warn')
+                } else if (k === 'polling') {
+                    stripState.textContent = 'RUNNING'
+                    setLed(ledRun, 'amber')
+                    runBtn.innerHTML = `RUNNING<small>on press · job 87</small>`
+                    prog.classList.add('indeterminate')
+                    progBar.style.width = '50%'
+                    stripJob.textContent = '#87'
+                    logLine('GET /pdf/87/url · 200 · active', 'warn')
+                } else if (k === 'completed') {
+                    stripState.textContent = 'DONE'
+                    setLed(ledDone, 'green')
+                    runBtn.innerHTML = `DONE<small>32 kb · 1 sheet · take a copy</small>`
+                    prog.classList.remove('indeterminate')
+                    progBar.style.width = '100%'
+                    stripJob.textContent = '#87 ✓'
+                    logLine('GET /pdf/87/url · 200 · <a href="#">presigned · pdf · 32 kb</a>', 'ok')
+                } else if (k === 'failed') {
+                    stripState.textContent = 'FAULT'
+                    setLed(ledFault, 'red')
+                    runBtn.innerHTML = `FAULT<small>plate refused — try again</small>`
+                    prog.classList.remove('indeterminate')
+                    progBar.style.width = '100%'
+                    stripJob.textContent = '#87 ✗'
+                    logLine('GET /pdf/87/url · 422 · failed', 'err')
+                } else if (k === 'rate') {
+                    stripState.textContent = 'WAIT'
+                    setLed(ledFault, 'red')
+                    runBtn.innerHTML = `WAIT 42s<small>too many requests</small>`
+                    prog.classList.remove('indeterminate')
+                    progBar.style.width = '50%'
+                    logLine('POST /pdf · 429 · retry-after 42s', 'err')
+                }
+            }
 
-  // --- LOG ---
-  const logEl = document.getElementById('log');
-  const logLine = (msg, tone) => {
-    const t = new Date().toLocaleTimeString('en-GB', { hour12: false });
-    const row = document.createElement('div');
-    row.className = 'row' + (tone ? ' ' + tone : '');
-    row.innerHTML = `<span class="t">${t}</span><span class="m">${msg}</span>`;
-    logEl.prepend(row);
-    while (logEl.children.length > 18) logEl.lastChild.remove();
-  };
-  logLine('pressroom · open · localhost:5173');
-  logLine('cors · allow · http://localhost:5173', 'ok');
-  logLine('redis · ping · pong', 'ok');
+            // demo bar
+            document.querySelectorAll('.demo-bar button').forEach((b) => {
+                b.addEventListener('click', () => {
+                    clearCycle()
+                    setState(b.dataset.state)
+                })
+            })
 
-  // --- state machine ---
-  const stripState = document.getElementById('stripState');
-  const stripJob   = document.getElementById('stripJob');
-  const ledMain    = document.getElementById('ledMain');
-  const ledReady   = document.getElementById('ledReady');
-  const ledQueue   = document.getElementById('ledQueue');
-  const ledRun     = document.getElementById('ledRun');
-  const ledDone    = document.getElementById('ledDone');
-  const ledFault   = document.getElementById('ledFault');
-  const allLeds    = [ledReady, ledQueue, ledRun, ledDone, ledFault];
-  const runBtn     = document.getElementById('runBtn');
-  const runSub     = document.getElementById('runSub');
-  const prog       = document.getElementById('prog');
-  const progBar    = prog.querySelector('div');
+            // ENGAGE click triggers full cycle
+            runBtn.addEventListener('click', () => {
+                if (runBtn.disabled) return
+                clearCycle()
+                setState('submitting')
+                cycleTimers.push(setTimeout(() => setState('polling'), 800))
+                cycleTimers.push(setTimeout(() => setState('completed'), 3200))
+            })
+            document.addEventListener('keydown', (e) => {
+                if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
+                    e.preventDefault()
+                    runBtn.click()
+                }
+            })
 
-  let cycleTimers = [];
-  const clearCycle = () => { cycleTimers.forEach(clearTimeout); cycleTimers = []; };
-  const setLed = (which, color) => {
-    allLeds.forEach((l) => l.classList.remove('on'));
-    if (!which) return;
-    which.classList.add('on');
-    // strip LED color match
-    ledMain.className = 'led ' + color;
-  };
-
-  let currentState = 'idle';
-  const setState = (k) => {
-    currentState = k;
-    document.querySelectorAll('.demo-bar button').forEach((b) => b.classList.toggle('on', b.dataset.state === k));
-    runBtn.disabled = (k === 'submitting' || k === 'polling' || k === 'rate');
-    if (k === 'idle') {
-      stripState.textContent = 'READY';
-      setLed(ledReady, 'green');
-      runBtn.innerHTML = `ENGAGE<small>⌘/CTRL + ↵ · SET + PRESS</small>`;
-      stripJob.textContent = '—';
-      prog.classList.remove('indeterminate');
-      progBar.style.width = '0%';
-    } else if (k === 'submitting') {
-      stripState.textContent = 'SETTING';
-      setLed(ledQueue, 'amber');
-      runBtn.innerHTML = `SETTING<small>type — to plate</small>`;
-      prog.classList.add('indeterminate');
-      progBar.style.width = '15%';
-      logLine('POST /pdf · 202 · job pending', 'warn');
-    } else if (k === 'polling') {
-      stripState.textContent = 'RUNNING';
-      setLed(ledRun, 'amber');
-      runBtn.innerHTML = `RUNNING<small>on press · job 87</small>`;
-      prog.classList.add('indeterminate');
-      progBar.style.width = '50%';
-      stripJob.textContent = '#87';
-      logLine('GET /pdf/87/url · 200 · active', 'warn');
-    } else if (k === 'completed') {
-      stripState.textContent = 'DONE';
-      setLed(ledDone, 'green');
-      runBtn.innerHTML = `DONE<small>32 kb · 1 sheet · take a copy</small>`;
-      prog.classList.remove('indeterminate');
-      progBar.style.width = '100%';
-      stripJob.textContent = '#87 ✓';
-      logLine('GET /pdf/87/url · 200 · <a href="#">presigned · pdf · 32 kb</a>', 'ok');
-    } else if (k === 'failed') {
-      stripState.textContent = 'FAULT';
-      setLed(ledFault, 'red');
-      runBtn.innerHTML = `FAULT<small>plate refused — try again</small>`;
-      prog.classList.remove('indeterminate');
-      progBar.style.width = '100%';
-      stripJob.textContent = '#87 ✗';
-      logLine('GET /pdf/87/url · 422 · failed', 'err');
-    } else if (k === 'rate') {
-      stripState.textContent = 'WAIT';
-      setLed(ledFault, 'red');
-      runBtn.innerHTML = `WAIT 42s<small>too many requests</small>`;
-      prog.classList.remove('indeterminate');
-      progBar.style.width = '50%';
-      logLine('POST /pdf · 429 · retry-after 42s', 'err');
-    }
-  };
-
-  // demo bar
-  document.querySelectorAll('.demo-bar button').forEach((b) => {
-    b.addEventListener('click', () => { clearCycle(); setState(b.dataset.state); });
-  });
-
-  // ENGAGE click triggers full cycle
-  runBtn.addEventListener('click', () => {
-    if (runBtn.disabled) return;
-    clearCycle();
-    setState('submitting');
-    cycleTimers.push(setTimeout(() => setState('polling'), 800));
-    cycleTimers.push(setTimeout(() => setState('completed'), 3200));
-  });
-  document.addEventListener('keydown', (e) => {
-    if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
-      e.preventDefault();
-      runBtn.click();
-    }
-  });
-
-  // initial state
-  setState('idle');
-</script>
-</body>
+            // initial state
+            setState('idle')
+        </script>
+    </body>
 </html>
