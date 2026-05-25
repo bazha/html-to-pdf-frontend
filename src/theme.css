@@ -1486,3 +1486,8 @@ button {
     outline: 2px solid var(--accent);
     outline-offset: 2px;
 }
+
+.editor-wrap {
+    display: flex;
+    flex-direction: column;
+}
