@@ -2,6 +2,7 @@ import {pageDimensionsMm} from './pageMetrics'
 import {type PdfOptions} from '../types/pdfOptions'
 
 const MAX_PAGES = 200
+const HEADER_FOOTER_HEIGHT_MM = 8
 
 const PREVIEW_STYLES = `
     @import url('https://fonts.googleapis.com/css2?family=Mona+Sans:ital,wdth,wght@0,75..125,200..900;1,75..125,200..900&family=Fragment+Mono:ital@0;1&display=swap');
@@ -96,7 +97,7 @@ const PREVIEW_STYLES = `
         position: absolute;
         left: 0;
         right: 0;
-        height: 8mm;
+        height: ${HEADER_FOOTER_HEIGHT_MM}mm;
         font-size: 9px;
         color: #666;
         padding: 0 var(--margin-r) 0 var(--margin-l);
@@ -217,7 +218,7 @@ const MEASUREMENT_SCRIPT = `
             if (hasFooter) {
                 var f = document.createElement('div');
                 f.className = 'preview-footer';
-                f.style.top = slotTop + pageHpx - 8 * MM_PER_PX + 'px';
+                f.style.top = slotTop + pageHpx - ${HEADER_FOOTER_HEIGHT_MM} * MM_PER_PX + 'px';
                 f.innerHTML = substituteTemplate(tmpl.footer || '', ctx);
                 page.appendChild(f);
             }
@@ -270,6 +271,8 @@ interface BuildInput {
 
 const safeJson = (value: unknown): string =>
     JSON.stringify(value).replace(/</g, '\\u003c').replace(/>/g, '\\u003e')
+
+const safeCss = (css: string): string => css.replace(/<\/style/gi, '<\\/style')
 
 export const buildPreviewSrcDoc = ({body, options, date}: BuildInput): string => {
     const {w, h} = pageDimensionsMm(options.format, options.landscape)
@@ -324,7 +327,7 @@ export const buildPreviewSrcDoc = ({body, options, date}: BuildInput): string =>
         '<style>' +
         PREVIEW_STYLES +
         '\n' +
-        options.css +
+        safeCss(options.css) +
         '</style>' +
         '<script id="preview-templates" type="application/json">' +
         safeJson(templates) +

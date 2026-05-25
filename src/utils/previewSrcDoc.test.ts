@@ -103,6 +103,13 @@ describe('buildPreviewSrcDoc', () => {
         expect(html).not.toContain('</script><script>x')
     })
 
+    it('neutralises </style> injection in options.css', () => {
+        const css = '</style><script>alert(1)</script><style>'
+        const html = buildPreviewSrcDoc({body: '', options: opts({css})})
+        // Original </style> must not appear inside the style block path
+        expect(html).not.toContain('</style><script>')
+    })
+
     it('wraps body in .preview-page > .preview-page-area', () => {
         const doc = parse(buildPreviewSrcDoc({body: '<p>hello</p>', options: opts()}))
         const area = doc.querySelector('.preview-page > .preview-page-area')
