@@ -56,7 +56,7 @@ export const useDropZone = (onFile: (file: File) => void): UseDropZone => {
       e.preventDefault();
       reset();
       const file = e.dataTransfer.files?.[0];
-      if (file) onFile(file);
+      if (file) void onFile(file);
     },
   };
 
