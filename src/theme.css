@@ -687,7 +687,8 @@ button {
 .preview-frame {
     display: block;
     width: 100%;
-    height: 380px;
+    /* Tall enough to show a scaled A4 page; clamp protects small + huge viewports. */
+    height: clamp(380px, 70vh, 900px);
     border: 0;
     background: var(--preview-frame-bg);
 }
