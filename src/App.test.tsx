@@ -110,4 +110,40 @@ describe('App full flow', () => {
 
         expect(captured.options?.format).toBe('Letter')
     })
+
+    it('inserts <!-- page-break --> at cursor when toolbar button clicked', async () => {
+        const user = userEvent.setup()
+        render(<App />)
+        const editor = screen.getByPlaceholderText(/Write or paste/i) as HTMLTextAreaElement
+        await user.type(editor, 'beforeafter')
+        // place caret between 'before' and 'after'
+        editor.focus()
+        editor.setSelectionRange(6, 6)
+        await user.click(screen.getByRole('button', {name: /insert page break/i}))
+        expect(editor.value).toBe('before<!-- page-break -->after')
+    })
+
+    it('sends transformed page-break div in the submit body', async () => {
+        let captured: {content?: string} = {}
+        server.use(
+            http.post(`${API}/pdf`, async ({request}) => {
+                captured = (await request.json()) as typeof captured
+                return HttpResponse.json(
+                    {message: 'ok', jobId: 'job-1', file: 'f.pdf', detectedType: 'markdown'},
+                    {status: 202},
+                )
+            }),
+        )
+
+        const user = userEvent.setup()
+        render(<App />)
+        const editor = screen.getByPlaceholderText(/Write or paste/i)
+        await user.type(editor, '# Hello\n\n<!-- page-break -->\n\nMore text here')
+        await user.click(screen.getByRole('button', {name: /^Press/i}))
+        await screen.findByRole('link', {name: /download pdf/i}, {timeout: 8000})
+
+        expect(captured.content).toContain('class="pdf-page-break"')
+        expect(captured.content).toContain('break-before: page')
+        expect(captured.content).not.toContain('<!-- page-break -->')
+    })
 })
