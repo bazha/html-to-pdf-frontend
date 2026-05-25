@@ -1,5 +1,6 @@
 import { useRef } from 'react';
 import { HEADER_TEMPLATE_MAX_LENGTH } from '../../types/pdfOptions';
+import { clampTemplate } from '../../utils/clampTemplate';
 import { PlaceholderChips } from './PlaceholderChips';
 
 interface Props {
@@ -37,7 +38,7 @@ export const HeaderFooterControl = ({
           type="text"
           className="opt-text"
           value={template}
-          onChange={(e) => onTemplateChange(e.target.value.slice(0, HEADER_TEMPLATE_MAX_LENGTH))}
+          onChange={(e) => onTemplateChange(clampTemplate(e.target.value))}
           placeholder={label === 'Footer' ? '{pageNumber} / {totalPages}' : 'My Document'}
           disabled={!enabled}
           aria-label={`${label} template`}

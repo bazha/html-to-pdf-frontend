@@ -1,8 +1,6 @@
 import type { RefObject } from 'react';
-import {
-  HEADER_TEMPLATE_MAX_LENGTH,
-  PLACEHOLDER_TOKENS,
-} from '../../types/pdfOptions';
+import { PLACEHOLDER_TOKENS } from '../../types/pdfOptions';
+import { clampTemplate } from '../../utils/clampTemplate';
 
 interface Props {
   inputRef: RefObject<HTMLInputElement | null>;
@@ -15,13 +13,12 @@ export const PlaceholderChips = ({ inputRef, onInsert }: Props) => {
   const insert = (token: string) => {
     const el = inputRef.current;
     if (!el) {
-      onInsert(token.slice(0, HEADER_TEMPLATE_MAX_LENGTH));
+      onInsert(clampTemplate(token));
       return;
     }
     const start = el.selectionStart ?? el.value.length;
     const end = el.selectionEnd ?? el.value.length;
-    const next = (el.value.slice(0, start) + token + el.value.slice(end))
-      .slice(0, HEADER_TEMPLATE_MAX_LENGTH);
+    const next = clampTemplate(el.value.slice(0, start) + token + el.value.slice(end));
     onInsert(next);
     requestAnimationFrame(() => {
       el.focus();
