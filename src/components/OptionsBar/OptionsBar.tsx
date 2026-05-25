@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import type { UsePdfOptions } from '../../hooks/usePdfOptions';
 import { DEFAULTS } from '../../types/pdfOptions';
+import { optionsEqual } from '../../utils/optionsEqual';
 import { summarize } from '../../utils/summarize';
 import { PageFormatControl } from './PageFormatControl';
 import { MarginsControl } from './MarginsControl';
@@ -10,9 +11,6 @@ import { CustomCssControl } from './CustomCssControl';
 interface Props {
   pdf: UsePdfOptions;
 }
-
-const isDefault = (opts: typeof DEFAULTS): boolean =>
-  JSON.stringify(opts) === JSON.stringify(DEFAULTS);
 
 const EXPANDED_KEY = 'press.options.expanded';
 
@@ -37,7 +35,7 @@ export const OptionsBar = ({ pdf }: Props) => {
     }
   };
 
-  const dirty = !isDefault(pdf.options);
+  const dirty = !optionsEqual(pdf.options, DEFAULTS);
   const summary = summarize(pdf.options);
 
   return (
