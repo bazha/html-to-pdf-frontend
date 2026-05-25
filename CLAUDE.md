@@ -68,6 +68,21 @@ Header/footer templates use placeholder substitution (`{pageNumber}`, `{totalPag
 
 `src/hooks/useDropZone.ts` owns drag-over state and the window-level safety net. The safety net listens for `dragleave` with `e.relatedTarget === null` (cursor left the document) and `drop` on `window` — NOT `dragend`, which only fires for in-page drag sources and silently misses external file drag-leaves. Consumers spread `{...bind}` onto the surface element.
 
+### Page break controls
+
+Users mark page breaks with the literal HTML comment `<!-- page-break -->` (case- and whitespace-tolerant). The canonical form is exported as `PAGE_BREAK_LITERAL` from `src/utils/pageBreaks.ts` — reuse the export rather than typing the string. `transformPageBreaks(s)` replaces every match with `<div class="pdf-page-break" style="break-before: page; page-break-before: always;"></div>`.
+
+The transform is called at **exactly two seams** and nowhere else:
+
+- `src/components/Preview.tsx` — before `renderMarkdownToHtml` / `sanitizeHtml`, so the dashed divider shows in the iframe.
+- `src/hooks/useSubmit.ts` — before `submitContent`, so Chromium sees the inline `break-before` directive on the backend.
+
+**Editor state stays raw.** `App.setContent` always holds exactly what the user typed; the comment is never auto-rewritten upstream. This invariant is what permits a future find/replace / save-draft feature without surprises.
+
+The `.pdf-page-break` class is styled inside `PREVIEW_STYLES` (dashed divider + "page break" label on screen, reset under `@media print`). DOMPurify survival is asserted by `pageBreaks.test.ts` test #7 — if a future PR tightens `PURIFY_OPTIONS` and strips the marker, that test fails loudly.
+
+`src/components/EditorToolbar.tsx` is a thin presentational toolbar above the textarea. Currently one button ("Insert page break") but the surface is built to accept future editor actions without rework. Cursor-position insertion lives in `Editor.tsx` via textarea ref + `requestAnimationFrame` caret restore (same pattern as `PlaceholderChips` → `HeaderFooterControl`).
+
 ## Testing
 
 - Vitest 4 + `@testing-library/react` + jsdom.
@@ -79,6 +94,6 @@ Header/footer templates use placeholder substitution (`{pageNumber}`, `{totalPag
 ## Conventions
 
 - Commit message style: lowercase scoped prefix, imperative (`feat(hooks): ...`, `refactor(ui): ...`, `fix(app): ...`). No `Co-Authored-By` trailers in normal commits.
-- Plans for multi-step work live in `docs/superpowers/plans/YYYY-MM-DD-<feature>.md`.
+- Plans for multi-step work live in `docs/superpowers/plans/YYYY-MM-DD-<feature>.md`; design docs in `docs/superpowers/specs/YYYY-MM-DD-<feature>-design.md`.
 - Keep the layering one-way. Don't import from `components/` inside `hooks/` or `utils/`.
 - When a piece of logic crosses two component files, prefer extracting a hook over prop-drilling state. The OptionsBar controls are intentionally not generalized into a compound component (only ~5 controls); resist that until a 7th lands.
