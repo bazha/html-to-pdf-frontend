@@ -14,3 +14,17 @@ export const optionsEqual = (a: PdfOptions, b: PdfOptions): boolean =>
   a.footer.template === b.footer.template &&
   a.printBackground === b.printBackground &&
   a.css === b.css;
+
+// Compile-time check: if a field is added to PdfOptions, this `satisfies`
+// fails until the new key is added to this list AND compared above.
+const _checkedKeys = {
+  format: true,
+  landscape: true,
+  marginPreset: true,
+  margins: true,
+  header: true,
+  footer: true,
+  printBackground: true,
+  css: true,
+} satisfies Record<keyof PdfOptions, true>;
+void _checkedKeys;
