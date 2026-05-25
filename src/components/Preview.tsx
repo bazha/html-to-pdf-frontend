@@ -1,5 +1,6 @@
 import {useEffect, useState} from 'react'
 import {renderMarkdownToHtml, sanitizeHtml} from '../utils/renderMarkdown'
+import {transformPageBreaks} from '../utils/pageBreaks'
 import type {ContentType} from '../utils/detectType'
 
 interface Props {
@@ -82,14 +83,31 @@ const PREVIEW_STYLES = `
   table { border-collapse: collapse; margin: 14px 0; font-size: 14px; width: 100%; }
   th, td { padding: 8px 12px; border-bottom: 1px solid #e7eaf0; text-align: left; }
   th { font-variation-settings: 'wdth' 100, 'wght' 620; font-weight: normal; color: #0a0b0e; }
+  .pdf-page-break {
+    border-top: 1px dashed #b5e368;
+    margin: 22px 0 0;
+    padding-top: 4px;
+    text-align: center;
+    font-size: 11px;
+    color: #888;
+    letter-spacing: 0.04em;
+  }
+  .pdf-page-break::after { content: 'page break'; }
+  @media print {
+    .pdf-page-break { border: 0; padding: 0; margin: 0; }
+    .pdf-page-break::after { content: ''; }
+  }
 `
 
 export const Preview = ({content, detectedType}: Props) => {
     const [srcDoc, setSrcDoc] = useState('')
     useEffect(() => {
         const handle = window.setTimeout(() => {
+            const transformed = transformPageBreaks(content)
             const body =
-                detectedType === 'markdown' ? renderMarkdownToHtml(content) : sanitizeHtml(content)
+                detectedType === 'markdown'
+                    ? renderMarkdownToHtml(transformed)
+                    : sanitizeHtml(transformed)
             setSrcDoc(
                 `<!doctype html><html><head><meta charset="utf-8"><style>${PREVIEW_STYLES}</style></head><body>${body}</body></html>`,
             )
