@@ -1,4 +1,4 @@
-import type { PageFormat } from '../../types/pdfOptions';
+import { PAGE_FORMATS, type PageFormat } from '../../types/pdfOptions';
 
 interface Props {
   format: PageFormat;
@@ -6,8 +6,6 @@ interface Props {
   onFormatChange: (f: PageFormat) => void;
   onOrientationChange: (landscape: boolean) => void;
 }
-
-const FORMATS: PageFormat[] = ['A4', 'Letter', 'Legal', 'A3', 'A5'];
 
 export const PageFormatControl = ({
   format,
@@ -25,7 +23,7 @@ export const PageFormatControl = ({
         onChange={(e) => onFormatChange(e.target.value as PageFormat)}
         aria-label="Page format"
       >
-        {FORMATS.map((f) => (
+        {PAGE_FORMATS.map((f) => (
           <option key={f} value={f}>{f}</option>
         ))}
       </select>

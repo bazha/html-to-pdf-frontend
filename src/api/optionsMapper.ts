@@ -1,5 +1,5 @@
 import { escapeHtml } from '../utils/escapeHtml';
-import type { PdfOptions } from '../types/pdfOptions';
+import { PLACEHOLDER_TOKENS, type PdfOptions } from '../types/pdfOptions';
 
 export interface RequestPdfOptions {
   format: string;
@@ -15,18 +15,10 @@ export interface RequestPdfOptions {
 const WRAP_STYLE =
   'font-size:9px;width:100%;padding:0 20mm;color:#666;display:flex;justify-content:center';
 
-const PLACEHOLDERS: ReadonlyArray<readonly [string, string]> = [
-  ['{pageNumber}', '<span class="pageNumber"></span>'],
-  ['{totalPages}', '<span class="totalPages"></span>'],
-  ['{date}',       '<span class="date"></span>'],
-  ['{title}',      '<span class="title"></span>'],
-  ['{url}',        '<span class="url"></span>'],
-];
-
-export const renderTemplate = (raw: string): string => {
+const renderTemplate = (raw: string): string => {
   let out = escapeHtml(raw);
-  for (const [token, span] of PLACEHOLDERS) {
-    out = out.replaceAll(token, span);
+  for (const { token, html } of PLACEHOLDER_TOKENS) {
+    out = out.replaceAll(token, html);
   }
   return `<div style="${WRAP_STYLE}">${out}</div>`;
 };

@@ -2,6 +2,8 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import {
   DEFAULTS,
   MARGIN_PRESETS,
+  MARGIN_PRESETS_ORDER,
+  PAGE_FORMATS,
   type Margins,
   type PdfOptions,
 } from '../types/pdfOptions';
@@ -23,10 +25,10 @@ const isValid = (o: unknown): o is PdfOptions => {
   const x = o as Partial<PdfOptions>;
   return (
     typeof x.format === 'string' &&
-    ['A4', 'Letter', 'Legal', 'A3', 'A5'].includes(x.format) &&
+    (PAGE_FORMATS as readonly string[]).includes(x.format) &&
     typeof x.landscape === 'boolean' &&
     typeof x.marginPreset === 'string' &&
-    ['normal', 'narrow', 'wide', 'none', 'custom'].includes(x.marginPreset) &&
+    (MARGIN_PRESETS_ORDER as readonly string[]).includes(x.marginPreset) &&
     !!x.margins &&
     typeof (x.margins as Margins).top === 'number' &&
     typeof (x.margins as Margins).right === 'number' &&

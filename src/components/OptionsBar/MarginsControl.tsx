@@ -1,4 +1,8 @@
-import type { Margins, MarginPreset } from '../../types/pdfOptions';
+import {
+  MARGIN_PRESETS_ORDER,
+  type Margins,
+  type MarginPreset,
+} from '../../types/pdfOptions';
 
 interface Props {
   preset: MarginPreset;
@@ -7,13 +11,13 @@ interface Props {
   onMarginChange: (side: keyof Margins, value: number) => void;
 }
 
-const PRESETS: { value: MarginPreset; label: string }[] = [
-  { value: 'normal', label: 'Normal' },
-  { value: 'narrow', label: 'Narrow' },
-  { value: 'wide',   label: 'Wide' },
-  { value: 'none',   label: 'None' },
-  { value: 'custom', label: 'Custom' },
-];
+const PRESET_LABELS: Record<MarginPreset, string> = {
+  normal: 'Normal',
+  narrow: 'Narrow',
+  wide:   'Wide',
+  none:   'None',
+  custom: 'Custom',
+};
 
 const SIDES: { key: keyof Margins; label: string }[] = [
   { key: 'top',    label: 'T' },
@@ -29,7 +33,7 @@ export const MarginsControl = ({ preset, margins, onPresetChange, onMarginChange
       <div className="opt-row">
         <span className="opt-label">Margins</span>
         <div className="opt-chips" role="radiogroup" aria-label="Margin preset">
-          {PRESETS.map(({ value, label }) => (
+          {MARGIN_PRESETS_ORDER.map((value) => (
             <button
               key={value}
               type="button"
@@ -38,7 +42,7 @@ export const MarginsControl = ({ preset, margins, onPresetChange, onMarginChange
               className={`opt-chip${preset === value ? ' is-active' : ''}`}
               onClick={() => onPresetChange(value)}
             >
-              {label}
+              {PRESET_LABELS[value]}
             </button>
           ))}
         </div>

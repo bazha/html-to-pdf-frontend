@@ -1,12 +1,15 @@
 import type { RefObject } from 'react';
-import { HEADER_TEMPLATE_MAX_LENGTH } from '../../types/pdfOptions';
+import {
+  HEADER_TEMPLATE_MAX_LENGTH,
+  PLACEHOLDER_TOKENS,
+} from '../../types/pdfOptions';
 
 interface Props {
   inputRef: RefObject<HTMLInputElement | null>;
   onInsert: (next: string) => void;
 }
 
-const TOKENS = ['{pageNumber}', '{totalPages}', '{date}', '{title}', '{url}'];
+const TOKENS = PLACEHOLDER_TOKENS.map((p) => p.token);
 
 export const PlaceholderChips = ({ inputRef, onInsert }: Props) => {
   const insert = (token: string) => {

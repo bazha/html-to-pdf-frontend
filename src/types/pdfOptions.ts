@@ -1,5 +1,16 @@
-export type PageFormat = 'A4' | 'Letter' | 'Legal' | 'A3' | 'A5';
-export type MarginPreset = 'normal' | 'narrow' | 'wide' | 'none' | 'custom';
+export const PAGE_FORMATS = ['A4', 'Letter', 'Legal', 'A3', 'A5'] as const;
+export type PageFormat = (typeof PAGE_FORMATS)[number];
+
+export const MARGIN_PRESETS_ORDER = ['normal', 'narrow', 'wide', 'none', 'custom'] as const;
+export type MarginPreset = (typeof MARGIN_PRESETS_ORDER)[number];
+
+export const PLACEHOLDER_TOKENS = [
+  { token: '{pageNumber}', html: '<span class="pageNumber"></span>' },
+  { token: '{totalPages}', html: '<span class="totalPages"></span>' },
+  { token: '{date}',       html: '<span class="date"></span>' },
+  { token: '{title}',      html: '<span class="title"></span>' },
+  { token: '{url}',        html: '<span class="url"></span>' },
+] as const;
 
 export interface Margins {
   top: number;     // millimetres
