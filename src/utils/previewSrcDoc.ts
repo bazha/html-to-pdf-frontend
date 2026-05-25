@@ -217,7 +217,7 @@ const MEASUREMENT_SCRIPT = `
             if (hasFooter) {
                 var f = document.createElement('div');
                 f.className = 'preview-footer';
-                f.style.top = slotTop + pageHpx - 30 + 'px';
+                f.style.top = slotTop + pageHpx - 8 * MM_PER_PX + 'px';
                 f.innerHTML = substituteTemplate(tmpl.footer || '', ctx);
                 page.appendChild(f);
             }
@@ -232,7 +232,7 @@ const MEASUREMENT_SCRIPT = `
         if (truncated) {
             var chip = document.createElement('div');
             chip.className = 'preview-truncated-chip';
-            chip.textContent = 'preview truncated · 200+ pages';
+            chip.textContent = 'preview truncated · ' + MAX_PAGES + '+ pages';
             document.body.appendChild(chip);
         }
     }
