@@ -1,6 +1,6 @@
 # .coderabbit.yaml — Next.js + TypeScript + Vitest
 
-language: 'en-EN'
+language: 'en-US'
 tone_instructions: 'Be concise and direct. Flag critical issues clearly. Skip cosmetic nits unless they affect readability. Prioritize correctness over style.'
 
 reviews:
