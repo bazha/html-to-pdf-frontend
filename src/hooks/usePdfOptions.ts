@@ -1,4 +1,5 @@
 import {useCallback, useEffect, useRef, useState} from 'react'
+import {STORAGE_KEYS} from '../constants'
 import {
     DEFAULTS,
     MARGIN_PRESETS,
@@ -7,8 +8,8 @@ import {
     type Margins,
     type PdfOptions,
 } from '../types/pdfOptions'
+import {safeGetItem, safeRemoveItem, safeSetItem} from '../utils/storage'
 
-const STORAGE_KEY = 'press.options'
 const STORAGE_VERSION = 1
 const DEBOUNCE_MS = 200
 
@@ -46,9 +47,9 @@ const isValid = (o: unknown): o is PdfOptions => {
 }
 
 const load = (): PdfOptions => {
+    const raw = safeGetItem(STORAGE_KEYS.options)
+    if (!raw) return DEFAULTS
     try {
-        const raw = localStorage.getItem(STORAGE_KEY)
-        if (!raw) return DEFAULTS
         const parsed = JSON.parse(raw) as {v?: number; options?: unknown}
         if (parsed.v !== STORAGE_VERSION) return DEFAULTS
         if (!isValid(parsed.options)) return DEFAULTS
@@ -73,11 +74,7 @@ export const usePdfOptions = (): UsePdfOptions => {
         }
         if (timer.current !== null) window.clearTimeout(timer.current)
         timer.current = window.setTimeout(() => {
-            try {
-                localStorage.setItem(STORAGE_KEY, JSON.stringify({v: STORAGE_VERSION, options}))
-            } catch {
-                // private mode or quota; in-memory state is still authoritative.
-            }
+            safeSetItem(STORAGE_KEYS.options, JSON.stringify({v: STORAGE_VERSION, options}))
         }, DEBOUNCE_MS)
         return () => {
             if (timer.current !== null) window.clearTimeout(timer.current)
@@ -111,11 +108,7 @@ export const usePdfOptions = (): UsePdfOptions => {
         timer.current = null
         skipNextPersist.current = true
         setOptions(DEFAULTS)
-        try {
-            localStorage.removeItem(STORAGE_KEY)
-        } catch {
-            // ignored
-        }
+        safeRemoveItem(STORAGE_KEYS.options)
     }, [])
 
     return {options, set, setMargin, reset}

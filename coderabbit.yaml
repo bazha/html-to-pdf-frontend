@@ -1,0 +1,146 @@
+# .coderabbit.yaml — Next.js + TypeScript + Vitest
+
+language: 'en-US'
+tone_instructions: 'Be concise and direct. Flag critical issues clearly. Skip cosmetic nits unless they affect readability. Prioritize correctness over style.'
+
+reviews:
+  profile: 'assertive'
+  request_changes_workflow: true
+
+  high_level_summary: true
+  high_level_summary_instructions: |
+    Bullet-point summary: what changed, architectural impact, potential risks.
+    Skip listing every touched file.
+  sequence_diagrams: true
+  estimate_code_review_effort: true
+  poem: false
+  in_progress_fortune: false
+
+  auto_review:
+    enabled: true
+    auto_incremental_review: true
+    drafts: false
+    ignore_title_keywords:
+      - '[skip review]'
+      - 'WIP'
+      - 'chore:'
+      - 'docs:'
+    base_branches:
+      - 'main'
+      - 'develop'
+      - 'staging'
+
+  # Ignore generated / build files
+  path_filters:
+    - '!**/.next/**'
+    - '!**/node_modules/**'
+    - '!**/dist/**'
+    - '!**/build/**'
+    - '!**/*.d.ts'
+    - '!**/coverage/**'
+    - '!**/__snapshots__/**'
+    - '!**/public/**'
+    - '!next-env.d.ts'
+    - '!**/storybook-static/**'
+
+  path_instructions:
+    # --- components ---
+    - path: '**/components/**/*.tsx'
+      instructions: |
+        React component review. Check:
+
+        STRUCTURE:
+        - Single responsibility: component does one thing
+        - Props interface defined and exported if reused
+        - No business logic — only UI + local state
+        - Large TSX (30+ lines) should be split into sub-components
+        - Named exports preferred over default exports
+
+        PERFORMANCE (re-renders):
+        - useMemo/useCallback only when there's a real perf problem, not preemptively
+        - Stable references for objects/arrays passed as props
+        - Keys in lists must be stable IDs, never array index
+        - No inline arrow functions creating new refs on every render if passed to memoized children
+        - Heavy renders: check if React.memo is justified
+
+        TYPESCRIPT:
+        - No `any` — use `unknown` + type guard or specific type
+        - No non-null assertion `!` without comment explaining why it's safe
+        - Props should not use `React.FC<>` — prefer explicit return type or none
+        - Event handlers: use `React.MouseEvent<HTMLButtonElement>` etc., not generic `Event`
+
+    # --- API routes ---
+    - path: '**/app/api/**/*.ts'
+      instructions: |
+        Next.js API routes / Route Handlers. CRITICAL review:
+
+        SECURITY:
+        - Auth check on every protected route — no missing auth guard
+        - Input validated with zod before processing
+        - No raw SQL string interpolation
+        - Rate limiting considered for public endpoints
+        - CORS headers explicit if needed
+
+        ERROR HANDLING:
+        - All async operations in try/catch
+        - Typed error responses with consistent shape
+        - No stack traces leaked in production responses
+        - HTTP status codes correct (400 for validation, 401 for auth, 403 for authz, 404, 500)
+
+        RESPONSES:
+        - NextResponse.json() with explicit status
+        - No sensitive data in response body (passwords, tokens, internal IDs)
+
+    # --- Hooks ---
+    - path: '**/hooks/**/*.ts'
+      instructions: |
+        Custom hooks. Check:
+        - Name starts with `use`
+        - Returns stable references (useMemo/useCallback where needed)
+        - Proper cleanup in useEffect (return cleanup fn for subscriptions, timers)
+        - No direct DOM manipulation — use refs
+        - Dependencies array in useEffect/useMemo/useCallback is complete and correct
+        - No missing deps that could cause stale closures
+
+    # --- Utilities / Helpers ---
+    - path: '**/utils/**/*.ts'
+      instructions: |
+        Utility functions. Check:
+        - Pure functions where possible (no side effects)
+        - Edge cases handled: null, undefined, empty string, empty array
+        - No implicit type coercion
+        - Functions exported individually, not as default object (tree-shaking)
+
+    # --- Tests ---
+    - path: '**/*.{test,spec}.{ts,tsx}'
+      instructions: |
+        Vitest / Testing Library tests. Check:
+        - Test names describe behavior: "should show error when email is invalid"
+        - No implementation details tested (no testing internal state/methods)
+        - userEvent preferred over fireEvent for user interactions
+        - Async: await userEvent.click(), findBy* for async elements
+        - No real network calls — mock fetch/API with vi.mock or MSW
+        - Cleanup: no global state leaking between tests
+        - Avoid testing library internals, test what user sees
+
+    # --- Types ---
+    - path: '**/types/**/*.ts'
+      instructions: |
+        Type definitions. Check:
+        - No `any`, `object`, `Function` as types
+        - Discriminated unions preferred over optional fields for variants
+        - API response types match actual API contract
+        - No duplicate type definitions — reuse or extend
+
+  labeling_instructions:
+    - label: 'performance'
+      instructions: 'Apply when PR touches rendering logic, data fetching, bundle size, or memoization'
+    - label: 'security'
+      instructions: 'Apply when PR touches auth, API routes, input handling, or env vars'
+    - label: 'breaking-change'
+      instructions: 'Apply when PR changes props interface of shared components, API response shape, or removes exports'
+    - label: 'needs-tests'
+      instructions: 'Apply when new logic is added without corresponding test files'
+    - label: 'dx'
+      instructions: 'Apply when PR improves types, adds error boundaries, or developer tooling'
+  auto_apply_labels: true
