@@ -1,6 +1,8 @@
 import {useState} from 'react'
+import {STORAGE_KEYS} from '../../constants'
 import type {UsePdfOptions} from '../../hooks/usePdfOptions'
 import {DEFAULTS} from '../../types/pdfOptions'
+import {safeGetItem, safeSetItem} from '../../utils/storage'
 import {optionsEqual} from '../../utils/optionsEqual'
 import {summarize} from '../../utils/summarize'
 import {PageFormatControl} from './PageFormatControl'
@@ -12,27 +14,17 @@ interface Props {
     pdf: UsePdfOptions
 }
 
-const EXPANDED_KEY = 'press.options.expanded'
-
 export const OptionsBar = ({pdf}: Props) => {
-    const [expanded, setExpanded] = useState<boolean>(() => {
-        try {
-            return localStorage.getItem(EXPANDED_KEY) === '1'
-        } catch {
-            return false
-        }
-    })
+    const [expanded, setExpanded] = useState<boolean>(
+        () => safeGetItem(STORAGE_KEYS.optionsExpanded) === '1',
+    )
     const [confirmingReset, setConfirmingReset] = useState(false)
 
     const toggle = () => {
         const next = !expanded
         setExpanded(next)
         if (!next) setConfirmingReset(false)
-        try {
-            localStorage.setItem(EXPANDED_KEY, next ? '1' : '0')
-        } catch {
-            // ignored
-        }
+        safeSetItem(STORAGE_KEYS.optionsExpanded, next ? '1' : '0')
     }
 
     const dirty = !optionsEqual(pdf.options, DEFAULTS)

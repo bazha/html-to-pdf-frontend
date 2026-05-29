@@ -1,3 +1,4 @@
+import {API_BASE_URL_DEFAULT} from '../constants'
 import type {RequestPdfOptions} from './optionsMapper'
 
 export type ApiErrorCode = 'validation' | 'rate_limit' | 'http' | 'network'
@@ -30,7 +31,7 @@ export interface SubmitResult {
     detectedType: 'html' | 'markdown'
 }
 
-export type PollResult =
+type PollResult =
     | {kind: 'active'; state: string}
     | {kind: 'completed'; url: string}
     | {kind: 'failed'; reason: string}
@@ -39,7 +40,7 @@ export type PollResult =
 const ACTIVE_STATES = new Set(['waiting', 'active', 'delayed', 'prioritized', 'waiting-children'])
 
 const getBaseUrl = (override?: string): string =>
-    override ?? import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:3000'
+    override ?? import.meta.env.VITE_API_BASE_URL ?? API_BASE_URL_DEFAULT
 
 export const submitContent = async (
     content: string,

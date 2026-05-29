@@ -1,15 +1,12 @@
 import {useEffect, useState} from 'react'
+import {STORAGE_KEYS} from '../constants'
+import {safeGetItem, safeSetItem} from '../utils/storage'
 
 type Theme = 'auto' | 'light' | 'dark'
-const STORAGE_KEY = 'press.theme'
 
 const readStored = (): Theme => {
-    try {
-        const v = localStorage.getItem(STORAGE_KEY)
-        if (v === 'light' || v === 'dark' || v === 'auto') return v
-    } catch {
-        // ignored
-    }
+    const v = safeGetItem(STORAGE_KEYS.theme)
+    if (v === 'light' || v === 'dark' || v === 'auto') return v
     return 'auto'
 }
 
@@ -77,11 +74,7 @@ export const ThemeSwitcher = () => {
 
     useEffect(() => {
         apply(theme)
-        try {
-            localStorage.setItem(STORAGE_KEY, theme)
-        } catch {
-            // storage may be unavailable (private browsing); ignore
-        }
+        safeSetItem(STORAGE_KEYS.theme, theme)
     }, [theme])
 
     const activeIdx = OPTIONS.findIndex((o) => o.value === theme)

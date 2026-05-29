@@ -1,4 +1,5 @@
-const MAX_CHARS = 50_000
+import {CONTENT_MAX} from '../constants'
+
 const MAX_BYTES = 1_000_000
 
 const ACCEPT_EXT = new Set(['.html', '.htm', '.md', '.markdown', '.txt', '.text'])
@@ -11,7 +12,7 @@ const looksLikeText = (file: File): boolean => {
     return ACCEPT_EXT.has(file.name.slice(dot).toLowerCase())
 }
 
-export type LoadResult = {ok: true; content: string; name: string} | {ok: false; error: string}
+type LoadResult = {ok: true; content: string; name: string} | {ok: false; error: string}
 
 export const loadFileAsText = async (file: File): Promise<LoadResult> => {
     if (file.size > MAX_BYTES) {
@@ -27,10 +28,10 @@ export const loadFileAsText = async (file: File): Promise<LoadResult> => {
         console.error('[loadFile][loadFileAsText] read failed', err)
         return {ok: false, error: 'Could not read file.'}
     }
-    if (text.length > MAX_CHARS) {
+    if (text.length > CONTENT_MAX) {
         return {
             ok: false,
-            error: `Content is too long (${text.length.toLocaleString('en-US')} chars; max ${MAX_CHARS.toLocaleString('en-US')}).`,
+            error: `Content is too long (${text.length.toLocaleString('en-US')} chars; max ${CONTENT_MAX.toLocaleString('en-US')}).`,
         }
     }
     return {ok: true, content: text, name: file.name}
