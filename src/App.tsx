@@ -15,9 +15,8 @@ import {useDropZone} from './hooks/useDropZone'
 import {detectType} from './utils/detectType'
 import {loadFileAsText} from './utils/loadFile'
 import {CSS_MAX_LENGTH} from './types/pdfOptions'
+import {API_BASE_URL_DEFAULT, CONTENT_MAX, CONTENT_MIN} from './constants'
 
-const MIN = 10
-const MAX = 50_000
 const VERSION = 'v1.0'
 const FILE_ERROR_TTL_MS = 4000
 
@@ -46,7 +45,7 @@ const App = () => {
     const cooldownLeft = useCooldown(submit.state)
     const dropZone = useDropZone(handlePickedFile)
 
-    const lengthValid = content.length >= MIN && content.length <= MAX
+    const lengthValid = content.length >= CONTENT_MIN && content.length <= CONTENT_MAX
     const cssWithinCap = pdfOptions.options.css.length <= CSS_MAX_LENGTH
     const canSubmit =
         lengthValid &&
@@ -68,14 +67,14 @@ const App = () => {
     }
 
     const apiBaseUrl =
-        (import.meta.env.VITE_API_BASE_URL as string | undefined) ?? 'http://localhost:3000'
+        (import.meta.env.VITE_API_BASE_URL as string | undefined) ?? API_BASE_URL_DEFAULT
 
     // Badge warns only when the count is genuinely outside the submit window
     // (over the cap). Under-MIN is left silent — the disabled Submit button is
     // already feedback enough and flashing amber on every first keystroke
     // reads as punitive.
     const charCount = content.length
-    const badgeWarn = charCount > MAX
+    const badgeWarn = charCount > CONTENT_MAX
     const badgeText = `${charCount.toLocaleString()} · ${detectedType}`
 
     return (
