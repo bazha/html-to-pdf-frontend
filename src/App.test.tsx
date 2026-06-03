@@ -146,4 +146,62 @@ describe('App full flow', () => {
         expect(captured.content).toContain('break-before: page')
         expect(captured.content).not.toContain('<!-- page-break -->')
     })
+
+    it('changing format updates iframe srcDoc page dimensions', async () => {
+        const user = userEvent.setup()
+        render(<App />)
+        // Expand the options bar
+        await user.click(screen.getByRole('button', {name: /options/i}))
+        // Change format to Letter
+        const formatSelect = screen.getByLabelText(/page format/i) as HTMLSelectElement
+        await user.selectOptions(formatSelect, 'Letter')
+        // Switch to preview
+        await user.click(screen.getByRole('tab', {name: /preview/i}))
+        await waitFor(
+            () => {
+                const iframe = document.querySelector('iframe') as HTMLIFrameElement
+                expect(iframe.srcdoc).toContain('data-page-w-mm="215.9"')
+            },
+            {timeout: 1000},
+        )
+    })
+
+    it('changing header template updates iframe srcDoc templates blob', async () => {
+        const user = userEvent.setup()
+        render(<App />)
+        await user.click(screen.getByRole('button', {name: /options/i}))
+        // Toggle header on
+        await user.click(screen.getByRole('switch', {name: /header enabled/i}))
+        // Type into header template input
+        const headerInput = screen.getByLabelText(/header template/i) as HTMLInputElement
+        fireEvent.change(headerInput, {target: {value: 'Hello {pageNumber}'}})
+        // Switch to preview
+        await user.click(screen.getByRole('tab', {name: /preview/i}))
+        await waitFor(
+            () => {
+                const iframe = document.querySelector('iframe') as HTMLIFrameElement
+                expect(iframe.srcdoc).toContain('Hello {pageNumber}')
+                expect(iframe.srcdoc).toContain('data-has-header="true"')
+            },
+            {timeout: 1000},
+        )
+    })
+
+    it('changing custom CSS injects it into iframe srcDoc style block', async () => {
+        const user = userEvent.setup()
+        render(<App />)
+        await user.click(screen.getByRole('button', {name: /options/i}))
+        // Expand the CSS pane
+        await user.click(screen.getByRole('button', {name: /add stylesheet/i}))
+        const cssArea = screen.getByLabelText(/custom css/i) as HTMLTextAreaElement
+        fireEvent.change(cssArea, {target: {value: 'h1 { color: tomato }'}})
+        await user.click(screen.getByRole('tab', {name: /preview/i}))
+        await waitFor(
+            () => {
+                const iframe = document.querySelector('iframe') as HTMLIFrameElement
+                expect(iframe.srcdoc).toContain('h1 { color: tomato }')
+            },
+            {timeout: 1000},
+        )
+    })
 })

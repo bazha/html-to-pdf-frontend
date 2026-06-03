@@ -97,7 +97,11 @@ const App = () => {
                 {activeTab === 'editor' ? (
                     <Editor value={content} onChange={setContent} onSubmitShortcut={handleSubmit} />
                 ) : (
-                    <Preview content={content} detectedType={detectedType} />
+                    <Preview
+                        content={content}
+                        detectedType={detectedType}
+                        options={pdfOptions.options}
+                    />
                 )}
                 {dropZone.isDragOver && <div className="drop-overlay">Drop to load</div>}
             </div>
